@@ -3,63 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TradeMaster Ecuador - Simulador de Comercio Exterior | ISMAC</title>
+    <title>TradeMaster Ecuador 2.0 - Simulador Avanzado | ISMAC</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             min-height: 100vh;
             color: #333;
         }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
+        
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        
         header {
             text-align: center;
             color: white;
             padding: 30px 0;
-            background: rgba(0,0,0,0.2);
+            background: rgba(0,0,0,0.3);
             border-radius: 15px;
             margin-bottom: 30px;
-            backdrop-filter: blur(10px);
         }
-
+        
         header h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #f39c12, #e74c3c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-
-        header p {
-            font-size: 1.2em;
-            opacity: 0.9;
+        
+        .version-badge {
+            display: inline-block;
+            background: #e74c3c;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            animation: pulse 2s infinite;
         }
-
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
         .game-panel {
             background: white;
             border-radius: 15px;
             padding: 25px;
             margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
-
+        
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 15px;
             margin-bottom: 20px;
         }
-
+        
         .stat-card {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -68,29 +72,17 @@
             text-align: center;
             transition: transform 0.3s;
         }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .stat-card h3 {
-            font-size: 0.9em;
-            opacity: 0.9;
-            margin-bottom: 5px;
-        }
-
-        .stat-card .value {
-            font-size: 1.8em;
-            font-weight: bold;
-        }
-
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
+        
+        .stat-card:hover { transform: translateY(-5px); }
+        .stat-card.danger { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); }
+        .stat-card.warning { background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); }
+        
+        .stat-card h3 { font-size: 0.85em; opacity: 0.9; margin-bottom: 5px; }
+        .stat-card .value { font-size: 1.6em; font-weight: bold; }
+        .stat-card .sub-value { font-size: 0.8em; opacity: 0.8; margin-top: 5px; }
+        
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        
         .tab {
             padding: 12px 24px;
             background: #e0e0e0;
@@ -100,73 +92,55 @@
             font-weight: bold;
             transition: all 0.3s;
         }
-
-        .tab.active {
-            background: #2a5298;
-            color: white;
-        }
-
-        .tab:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .content-section {
-            display: none;
-        }
-
-        .content-section.active {
-            display: block;
-            animation: fadeIn 0.5s;
-        }
-
+        
+        .tab.active { background: #2a5298; color: white; }
+        .tab:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        
+        .content-section { display: none; }
+        .content-section.active { display: block; animation: fadeIn 0.5s; }
+        
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
+        
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+        
         .product-card {
             border: 2px solid #e0e0e0;
             border-radius: 12px;
             padding: 20px;
             transition: all 0.3s;
             position: relative;
-            overflow: hidden;
         }
-
+        
         .product-card:hover {
             border-color: #2a5298;
             transform: translateY(-5px);
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
-
-        .product-card.import {
-            border-left: 5px solid #e74c3c;
-        }
-
-        .product-card.export {
-            border-left: 5px solid #27ae60;
-        }
-
-        .product-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            margin-bottom: 15px;
-        }
-
-        .product-title {
-            font-size: 1.2em;
+        
+        .product-card.import { border-left: 5px solid #e74c3c; }
+        .product-card.export { border-left: 5px solid #27ae60; }
+        
+        .risk-label {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.7em;
             font-weight: bold;
-            color: #2c3e50;
+            text-transform: uppercase;
         }
-
+        
+        .risk-low { background: #d4edda; color: #155724; }
+        .risk-medium { background: #fff3cd; color: #856404; }
+        .risk-high { background: #f8d7da; color: #721c24; animation: pulse 2s infinite; }
+        
+        .product-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px; padding-right: 60px; }
+        .product-title { font-size: 1.2em; font-weight: bold; color: #2c3e50; }
+        
         .tariff-code {
             background: #f39c12;
             color: white;
@@ -175,24 +149,21 @@
             font-size: 0.8em;
             font-family: monospace;
         }
-
-        .product-info {
+        
+        .product-info { margin: 10px 0; font-size: 0.95em; color: #555; }
+        .product-info strong { color: #2c3e50; }
+        
+        .risk-details {
+            background: #f8f9fa;
+            border-left: 3px solid #e74c3c;
+            padding: 10px;
             margin: 10px 0;
-            font-size: 0.95em;
-            color: #555;
+            font-size: 0.85em;
+            color: #666;
         }
-
-        .product-info strong {
-            color: #2c3e50;
-        }
-
-        .controls {
-            margin-top: 15px;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
+        
+        .controls { margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap; }
+        
         .btn {
             padding: 10px 20px;
             border: none;
@@ -203,32 +174,15 @@
             flex: 1;
             min-width: 100px;
         }
-
-        .btn-primary {
-            background: #3498db;
-            color: white;
-        }
-
-        .btn-success {
-            background: #27ae60;
-            color: white;
-        }
-
-        .btn-danger {
-            background: #e74c3c;
-            color: white;
-        }
-
-        .btn-warning {
-            background: #f39c12;
-            color: white;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
+        
+        .btn-primary { background: #3498db; color: white; }
+        .btn-success { background: #27ae60; color: white; }
+        .btn-danger { background: #e74c3c; color: white; }
+        .btn-warning { background: #f39c12; color: white; }
+        .btn-purple { background: #9b59b6; color: white; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        
         .calculator {
             background: #f8f9fa;
             border-radius: 10px;
@@ -236,24 +190,16 @@
             margin-top: 15px;
             display: none;
         }
-
-        .calculator.active {
-            display: block;
-            animation: slideDown 0.3s;
-        }
-
+        
+        .calculator.active { display: block; animation: slideDown 0.3s; }
+        
         @keyframes slideDown {
             from { opacity: 0; max-height: 0; }
             to { opacity: 1; max-height: 1000px; }
         }
-
-        .calc-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #dee2e6;
-        }
-
+        
+        .calc-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #dee2e6; }
+        
         .calc-row.total {
             font-weight: bold;
             color: #2c3e50;
@@ -263,7 +209,9 @@
             margin-top: 10px;
             padding-top: 10px;
         }
-
+        
+        .calc-row.risk { background: #fff3cd; padding: 10px; border-radius: 5px; margin: 5px 0; }
+        
         .event-banner {
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             color: white;
@@ -274,33 +222,90 @@
             animation: pulse 2s infinite;
             display: none;
         }
-
-        .event-banner.active {
-            display: block;
+        
+        .event-banner.active { display: block; }
+        
+        .decision-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
         }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
+        
+        .decision-modal.active { display: flex; }
+        
+        .decision-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 3px solid #e74c3c;
         }
-
+        
+        .decision-content h2 { color: #e74c3c; margin-bottom: 15px; text-align: center; }
+        
+        .decision-content .scenario {
+            background: #fff3cd;
+            border-left: 5px solid #f39c12;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-size: 1.1em;
+        }
+        
+        .decision-options { display: grid; gap: 15px; margin: 20px 0; }
+        
+        .decision-option {
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8f9fa;
+        }
+        
+        .decision-option:hover {
+            border-color: #3498db;
+            background: #e3f2fd;
+            transform: translateX(5px);
+        }
+        
+        .decision-option h4 { color: #2c3e50; margin-bottom: 8px; }
+        .decision-option .consequence { font-size: 0.9em; color: #666; }
+        
+        .decision-option .risk-level {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            margin-top: 8px;
+            font-weight: bold;
+        }
+        
+        .risk-safe { background: #d4edda; color: #155724; }
+        .risk-risky { background: #fff3cd; color: #856404; }
+        .risk-dangerous { background: #f8d7da; color: #721c24; }
+        
         .modal {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             background: rgba(0,0,0,0.7);
             z-index: 1000;
             justify-content: center;
             align-items: center;
         }
-
-        .modal.active {
-            display: flex;
-        }
-
+        
+        .modal.active { display: flex; }
+        
         .modal-content {
             background: white;
             padding: 30px;
@@ -311,40 +316,18 @@
             overflow-y: auto;
             animation: modalIn 0.3s;
         }
-
+        
         @keyframes modalIn {
             from { transform: scale(0.8); opacity: 0; }
             to { transform: scale(1); opacity: 1; }
         }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .close-btn {
-            font-size: 1.5em;
-            cursor: pointer;
-            color: #999;
-        }
-
-        .close-btn:hover {
-            color: #333;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #555;
-        }
-
+        
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .close-btn { font-size: 1.5em; cursor: pointer; color: #999; }
+        .close-btn:hover { color: #333; }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
         .form-group input, .form-group select {
             width: 100%;
             padding: 10px;
@@ -352,17 +335,9 @@
             border-radius: 6px;
             font-size: 1em;
         }
-
-        .form-group input:focus, .form-group select:focus {
-            outline: none;
-            border-color: #3498db;
-        }
-
-        .history-list {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
+        
+        .history-list { max-height: 300px; overflow-y: auto; }
+        
         .history-item {
             padding: 15px;
             border-left: 4px solid #3498db;
@@ -370,39 +345,11 @@
             margin-bottom: 10px;
             border-radius: 0 8px 8px 0;
         }
-
-        .history-item.success {
-            border-left-color: #27ae60;
-        }
-
-        .history-item.danger {
-            border-left-color: #e74c3c;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.8em;
-            font-weight: bold;
-            margin-left: 5px;
-        }
-
-        .badge-doc {
-            background: #e74c3c;
-            color: white;
-        }
-
-        .badge-ice {
-            background: #9b59b6;
-            color: white;
-        }
-
-        .badge-control {
-            background: #f39c12;
-            color: white;
-        }
-
+        
+        .history-item.success { border-left-color: #27ae60; }
+        .history-item.danger { border-left-color: #e74c3c; }
+        .history-item.warning { border-left-color: #f39c12; }
+        
         .progress-bar {
             width: 100%;
             height: 20px;
@@ -411,7 +358,7 @@
             overflow: hidden;
             margin-top: 10px;
         }
-
+        
         .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, #27ae60, #2ecc71);
@@ -423,30 +370,14 @@
             font-weight: bold;
             font-size: 0.9em;
         }
-
-        .alert {
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-
-        .alert-info {
-            background: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
-        }
-
-        .alert-warning {
-            background: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeaa7;
-        }
-
-        .level-indicator {
-            text-align: center;
-            margin: 20px 0;
-        }
-
+        
+        .alert { padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+        .alert-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        .alert-danger { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        
+        .level-indicator { text-align: center; margin: 20px 0; }
+        
         .level-badge {
             display: inline-block;
             background: gold;
@@ -455,180 +386,79 @@
             border-radius: 25px;
             font-weight: bold;
             font-size: 1.2em;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-
-        @media (max-width: 768px) {
-            .products-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            header h1 {
-                font-size: 1.8em;
-            }
-            
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        .tutorial-box {
-            background: #e3f2fd;
-            border-left: 5px solid #2196f3;
+        
+        .bank-panel {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
             padding: 20px;
+            border-radius: 10px;
             margin-bottom: 20px;
-            border-radius: 0 8px 8px 0;
         }
-
-        .tutorial-box h3 {
-            color: #1976d2;
-            margin-bottom: 10px;
+        
+        .bank-panel h3 { margin-bottom: 15px; color: #f39c12; }
+        
+        .loan-info { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 15px 0; }
+        
+        .loan-stat { background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; text-align: center; }
+        .loan-stat .label { font-size: 0.8em; opacity: 0.8; }
+        .loan-stat .value { font-size: 1.3em; font-weight: bold; color: #f39c12; }
+        
+        .futures-panel {
+            background: linear-gradient(135deg, #8e44ad, #9b59b6);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
         }
-
-        .formula-box {
-            background: #f5f5f5;
-            border: 1px dashed #999;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 8px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9em;
+        
+        .game-over-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 5000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
         }
+        
+        .game-over-overlay.active { display: flex; }
+        
+        .game-over-content { text-align: center; color: white; }
+        .game-over-content h1 { font-size: 4em; color: #e74c3c; margin-bottom: 20px; }
+        .game-over-content p { font-size: 1.5em; margin-bottom: 30px; }
+        
+        .final-stats { background: rgba(255,255,255,0.1); padding: 30px; border-radius: 15px; margin: 20px 0; }
+        
+        .difficulty-selector { background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: center; }
+        
+        .difficulty-btn {
+            padding: 10px 30px;
+            margin: 5px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .difficulty-btn:hover { transform: translateY(-2px); }
+        .difficulty-btn.active { background: #2a5298; color: white; border-color: #2a5298; }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🌎 TradeMaster Ecuador</h1>
-            <p>Simulador de Comercio Exterior - Instituto Tecnológico ISMAC</p>
-            <p>Nivel 4to - Simulación de Negocios Internacionales</p>
+            <h1>🌎 TradeMaster Ecuador 2.0</h1>
+            <p>Simulador Avanzado de Comercio Exterior - Instituto Tecnológico ISMAC</p>
+            <p>Nivel 4to - Gestión de Riesgos y Toma de Decisiones</p>
+            <span class="version-badge">⚡ VERSIÓN 2.0 - AHORA CON RIESGO REAL</span>
         </header>
-
-        <div id="eventBanner" class="event-banner">
-            <h2>⚠️ Evento Actual: <span id="eventTitle"></span></h2>
-            <p id="eventDescription"></p>
-            <button class="btn btn-warning" onclick="handleEvent()">Tomar Decisión</button>
-        </div>
-
-        <div class="game-panel">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <h3>Capital Disponible</h3>
-                    <div class="value" id="capital">$50,000</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Operaciones Realizadas</h3>
-                    <div class="value" id="operations">0</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Utilidad Total</h3>
-                    <div class="value" id="profit">$0</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Reputación</h3>
-                    <div class="value" id="reputation">100%</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Nivel</h3>
-                    <div class="value" id="level">1</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Experiencia</h3>
-                    <div class="value" id="experience">0 XP</div>
-                </div>
-            </div>
-
-            <div class="level-indicator">
-                <span class="level-badge">🏆 Nivel <span id="levelNum">1</span>: <span id="levelName">Importador Principiante</span></span>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressBar" style="width: 0%">0%</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="game-panel">
-            <div class="tabs">
-                <button class="tab active" onclick="showTab('import')">📥 Importaciones</button>
-                <button class="tab" onclick="showTab('export')">📤 Exportaciones</button>
-                <button class="tab" onclick="showTab('history')">📋 Historial</button>
-                <button class="tab" onclick="showTab('tutorial')">📚 Tutorial</button>
-            </div>
-
-            <div id="import" class="content-section active">
-                <div class="alert alert-info">
-                    <strong>Importante:</strong> Todos los cálculos incluyen FOB + Flete + Seguro = CIF, luego arancel advalorem, FODINFA (0.5%), ICE (si aplica) e IVA (15%).
-                </div>
-                <div class="products-grid" id="importProducts"></div>
-            </div>
-
-            <div id="export" class="content-section">
-                <div class="alert alert-warning">
-                    <strong>Consejo:</strong> Analiza los mercados de destino. USA, UE y Asia tienen diferentes requisitos y aranceles para productos ecuatorianos.
-                </div>
-                <div class="products-grid" id="exportProducts"></div>
-            </div>
-
-            <div id="history" class="content-section">
-                <h2>Historial de Operaciones</h2>
-                <div class="history-list" id="historyList">
-                    <p style="text-align: center; color: #999; padding: 40px;">No hay operaciones registradas aún</p>
-                </div>
-            </div>
-
-            <div id="tutorial" class="content-section">
-                <div class="tutorial-box">
-                    <h3>🎓 Cómo funciona el simulador</h3>
-                    <p>Este simulador te permite experimentar con operaciones reales de comercio exterior ecuatoriano:</p>
-                    <ol style="margin-left: 20px; margin-top: 10px;">
-                        <li>Selecciona productos para importar o exportar</li>
-                        <li>Revisa la clasificación arancelaria y documentos requeridos</li>
-                        <li>Calcula automáticamente todos los impuestos</li>
-                        <li>Define tu precio de venta y verifica utilidades</li>
-                        <li>Responde a eventos aleatorios que afectan el mercado</li>
-                        <li>Sube de nivel desbloqueando productos más complejos</li>
-                    </ol>
-                </div>
-
-                <div class="tutorial-box">
-                    <h3>📊 Fórmulas de Cálculo Ecuador</h3>
-                    <div class="formula-box">
-                        <strong>CIF</strong> = FOB + Flete + Seguro (1% FOB)<br><br>
-                        <strong>Base Imponible</strong> = CIF<br><br>
-                        <strong>Advalorem</strong> = CIF × % Arancel<br><br>
-                        <strong>FODINFA</strong> = CIF × 0.5%<br><br>
-                        <strong>Base IVA</strong> = CIF + Advalorem + FODINFA + ICE<br><br>
-                        <strong>IVA</strong> = Base IVA × 15%<br><br>
-                        <strong>Total Importación</strong> = CIF + Advalorem + FODINFA + ICE + IVA
-                    </div>
-                </div>
-
-                <div class="tutorial-box">
-                    <h3>📋 Documentos de Control Previo</h3>
-                    <p>Algunos productos requieren permisos especiales antes de importar:</p>
-                    <ul style="margin-left: 20px; margin-top: 10px;">
-                        <li><strong>Ministerio de Defensa:</strong> Armas, municiones, explosivos</li>
-                        <li><strong>Ministerio de Agricultura:</strong> Productos agrícolas, animales vivos</li>
-                        <li><strong>Ministerio de Salud:</strong> Medicinas, cosméticos, alimentos procesados</li>
-                        <li><strong>INEN:</strong> Normas técnicas para ciertos productos industriales</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal para calculadora -->
-    <div id="calcModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="modalTitle">Calcular Importación</h2>
-                <span class="close-btn" onclick="closeModal()">&times;</span>
-            </div>
-            <div id="modalBody"></div>
-        </div>
-    </div>
-
-    <script>
-        // Datos del juego
+        
+        // Estado del juego
         let gameState = {
             capital: 50000,
             operations: 0,
@@ -636,233 +466,142 @@
             reputation: 100,
             level: 1,
             experience: 0,
-            history: []
+            history: [],
+            debt: 0,
+            creditLimit: 100000,
+            difficulty: 'normal',
+            consecutiveLosses: 0
         };
 
-        // Productos para importar con datos reales de Ecuador
+        // Productos con riesgo
         const importProducts = [
             {
                 id: 1,
                 name: "Smartphones 5G",
                 tariffCode: "8517.12.00.00",
-                description: "Teléfonos móviles con tecnología 5G",
                 origin: "China / USA / Corea",
                 fobPrice: 300,
-                tariffRate: 0, // 0% arancel para tecnología
+                tariffRate: 0,
                 hasICE: false,
                 requiresPermit: false,
-                controlDocs: [],
                 fleteRate: 0.05,
-                category: "tecnologia"
+                riskLevel: 'low',
+                riskDescription: 'Bajo riesgo: Tecnología estable',
+                lossProbability: 0.1
             },
             {
                 id: 2,
                 name: "Vino Tinto Premium",
                 tariffCode: "2204.21.00.00",
-                description: "Vinos de uva fresca, incluidos los fortificados",
                 origin: "Argentina / Chile / España",
                 fobPrice: 15,
-                tariffRate: 0.10, // 10% arancel
+                tariffRate: 0.10,
                 hasICE: true,
-                iceRate: 0.05, // 5% ICE ad valorem
+                iceRate: 0.05,
                 requiresPermit: true,
-                controlDocs: ["Registro Sanitario (ARCSA)", "Etiqueta INEN"],
                 fleteRate: 0.08,
-                category: "bebidas"
+                riskLevel: 'medium',
+                riskDescription: 'Riesgo medio: Control sanitario estricto',
+                lossProbability: 0.25
             },
             {
                 id: 3,
-                name: "Automóviles Eléctricos",
-                tariffCode: "8703.80.00.00",
-                description: "Vehículos automóviles propulsados únicamente por motor eléctrico",
-                origin: "China / USA / Alemania",
-                fobPrice: 25000,
-                tariffRate: 0, // 0% arancel para eléctricos (exento)
-                hasICE: false, // Exentos del ICE por ser eléctricos
-                requiresPermit: true,
-                controlDocs: ["Homologación MTOP", "Certificado de Emisiones"],
-                fleteRate: 0.06,
-                category: "vehiculos"
-            },
-            {
-                id: 4,
-                name: "Perfumes y Aguas de Tocador",
-                tariffCode: "3303.00.00.00",
-                description: "Perfumes y aguas de tocador",
-                origin: "Francia / Italia / USA",
-                fobPrice: 50,
-                tariffRate: 0.15, // 15% arancel
-                hasICE: true,
-                iceRate: 0.20, // 20% ICE
-                requiresPermit: true,
-                controlDocs: ["Registro Sanitario (ARCSA)", "Notificación Sanitaria"],
-                fleteRate: 0.04,
-                category: "cosmetica"
-            },
-            {
-                id: 5,
-                name: "Cerveza Artesanal",
-                tariffCode: "2203.00.00.00",
-                description: "Cerveza de malta",
-                origin: "Bélgica / Alemania / USA",
-                fobPrice: 3,
-                tariffRate: 0.10, // 10% arancel
-                hasICE: true,
-                iceSpecific: 1.56, // $1.56 por litro de alcohol puro (asumiendo 5% = 0.078 por litro)
-                requiresPermit: true,
-                controlDocs: ["Registro Sanitario (ARCSA)", "Permiso de Importación de Bebidas Alcohólicas"],
-                fleteRate: 0.10,
-                category: "bebidas"
-            },
-            {
-                id: 6,
-                name: "Maquinaria Industrial",
-                tariffCode: "8479.89.00.00",
-                description: "Máquinas y aparatos mecánicos con función propia",
-                origin: "Alemania / Italia / Japón",
-                fobPrice: 15000,
-                tariffRate: 0, // 0% para maquinaria industrial
+                name: "Petróleo Crudo",
+                tariffCode: "2709.00.00.00",
+                origin: "Medio Oriente / USA",
+                fobPrice: 75,
+                tariffRate: 0,
                 hasICE: false,
-                requiresPermit: false,
-                controlDocs: ["Certificado de Origen", "Ficha Técnica"],
-                fleteRate: 0.07,
-                category: "industrial"
+                requiresPermit: true,
+                fleteRate: 0.03,
+                riskLevel: 'high',
+                riskDescription: '⚠️ ALTO RIESGO: Precio fluctúa ±30%',
+                lossProbability: 0.45,
+                priceVolatility: 0.30
             }
         ];
 
-        // Productos para exportar desde Ecuador
         const exportProducts = [
             {
                 id: 101,
                 name: "Banano Orgánico",
-                destination: "USA / UE / Rusia",
+                destination: "USA / UE",
                 fobPrice: 8,
-                volume: "Cajas de 18kg",
-                requirements: ["Certificación Orgánica USDA/EU", "Phytosanitario"],
-                tariffDest: "0% (ATPDA)",
+                volume: "Cajas 18kg",
                 profitMargin: 0.25,
-                category: "agricola"
+                riskLevel: 'medium',
+                riskDescription: 'Riesgo medio: Cadena de frío',
+                lossProbability: 0.20,
+                clientRisk: 0.10
             },
             {
                 id: 102,
                 name: "Cacao en Grano",
-                destination: "Bélgica / USA / Japón",
+                destination: "Bélgica / USA",
                 fobPrice: 2800,
-                volume: "Tonela métrica",
-                requirements: ["Certificado de Origen", "Control de calidad"],
-                tariffDest: "0% (Acuerdo UE)",
+                volume: "Tm",
                 profitMargin: 0.30,
-                category: "agricola"
+                riskLevel: 'low',
+                riskDescription: 'Bajo riesgo: Demanda constante',
+                lossProbability: 0.15,
+                clientRisk: 0.05
             },
             {
                 id: 103,
-                name: "Camaron Congelado",
-                destination: "China / España / USA",
-                fobPrice: 12,
-                volume: "Caja de 10kg",
-                requirements: ["Certificación HACCP", "Registro FDA (USA)"],
-                tariffDest: "Variable 0-6%",
-                profitMargin: 0.35,
-                category: "pesquero"
-            },
-            {
-                id: 104,
                 name: "Rosas Frescas",
-                destination: "USA / Rusia / Japón",
+                destination: "USA / Rusia",
                 fobPrice: 1.5,
                 volume: "Tallo",
-                requirements: ["Phytosanitario", "Certificación FlorEcuador"],
-                tariffDest: "0% (Sistema Generalizado de Preferencias)",
                 profitMargin: 0.40,
-                category: "flores"
-            },
-            {
-                id: 105,
-                name: "Petroleo Crudo",
-                destination: "USA / China / Chile",
-                fobPrice: 75,
-                volume: "Barril",
-                requirements: ["Certificación de Calidad", "Contratos OTC"],
-                tariffDest: "0% (Combustibles)",
-                profitMargin: 0.15,
-                category: "hidrocarburos"
-            },
-            {
-                id: 106,
-                name: "Productos de Mar (Atún)",
-                destination: "España / Italia / Alemania",
-                fobPrice: 4500,
-                volume: "Tonela métrica",
-                requirements: ["Certificación MSC", "Etiquetado UE"],
-                tariffDest: "0% (Acuerdo UE)",
-                profitMargin: 0.28,
-                category: "pesquero"
+                riskLevel: 'high',
+                riskDescription: '⚠️ ALTO RIESGO: Perecedero extremo',
+                lossProbability: 0.40,
+                clientRisk: 0.20
             }
         ];
 
-        // Eventos aleatorios
-        const randomEvents = [
+        // Eventos de decisión
+        const criticalDecisions = [
             {
-                title: "Huelga de Transportistas",
-                description: "Los transportistas han declarado una huelga de 48 horas. Los costos de flete aumentan un 30%.",
-                effect: "flete_increase",
-                duration: 2
+                id: 'container_crisis',
+                title: 'Crisis de Contenedores',
+                scenario: 'No hay espacio en el barco. El cliente exige entrega a tiempo o cancela.',
+                options: [
+                    { text: 'Pagar flete aéreo (+80% costo)', consequence: 'Llega a tiempo', capitalEffect: -0.3, reputationEffect: 10, risk: 'safe' },
+                    { text: 'Esperar siguiente barco', consequence: 'Pierdes contrato', capitalEffect: -0.1, reputationEffect: -25, risk: 'risky' },
+                    { text: 'Negociar extensión (50% éxito)', consequence: 'Apuesta riesgosa', capitalEffect: 0, reputationEffect: -10, successRate: 0.5, risk: 'dangerous' }
+                ]
             },
             {
-                title: "Cambio Regulatorio",
-                description: "El SENAE ha implementado nuevos controles. Todos los productos requieren inspección física (Luz Roja).",
-                effect: "delay",
-                duration: 3
-            },
-            {
-                title: "Crisis Cambiaria",
-                description: "El dólar se ha fortalecido. Los productos importados son más baratos, pero las exportaciones pierden competitividad.",
-                effect: "currency",
-                duration: 5
-            },
-            {
-                title: "Acuerdo Comercial",
-                description: "Ecuador ha firmado un nuevo acuerdo comercial. Los aranceles bajan 5% por 1 semana.",
-                effect: "tariff_discount",
-                duration: 7
-            },
-            {
-                title: "Escasez de Contenedores",
-                description: "Hay escasez mundial de contenedores. Los costos de envío marítimo se duplican.",
-                effect: "container_shortage",
-                duration: 4
+                id: 'quality_issue',
+                title: 'Problema de Calidad',
+                scenario: '30% de la carga tiene etiquetado incorrecto.',
+                options: [
+                    { text: 'Re-etiquetar ($5,000)', consequence: 'Pierdes tiempo', capitalEffect: -5000, reputationEffect: 5, risk: 'safe' },
+                    { text: 'Vender con -40% descuento', consequence: 'Dañas marca', capitalEffect: -0.4, reputationEffect: -15, risk: 'risky' },
+                    { text: 'Soborno al inspector ($2,000)', consequence: '30% cárcel', capitalEffect: -2000, reputationEffect: -50, jailProbability: 0.3, risk: 'dangerous' }
+                ]
             }
         ];
-
-        let currentEvent = null;
 
         // Inicialización
         document.addEventListener('DOMContentLoaded', function() {
             renderImportProducts();
             renderExportProducts();
             updateStats();
-            checkRandomEvent();
-            
-            // Evento aleatorio cada 30 segundos (para demo)
-            setInterval(checkRandomEvent, 30000);
+            setInterval(checkRandomEvent, 45000);
+            setInterval(applyInterest, 120000);
         });
-
-        function showTab(tabName) {
-            document.querySelectorAll('.content-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
-        }
 
         function renderImportProducts() {
             const container = document.getElementById('importProducts');
-            container.innerHTML = importProducts.map(product => `
+            container.innerHTML = importProducts.map(product => {
+                const riskClass = `risk-${product.riskLevel}`;
+                const riskText = product.riskLevel === 'high' ? 'ALTO RIESGO' : product.riskLevel === 'medium' ? 'Riesgo Medio' : 'Bajo Riesgo';
+                
+                return `
                 <div class="product-card import">
+                    <span class="risk-label ${riskClass}">${riskText}</span>
                     <div class="product-header">
                         <div class="product-title">${product.name}</div>
                         <span class="tariff-code">${product.tariffCode}</span>
@@ -870,460 +609,348 @@
                     <div class="product-info">
                         <strong>Origen:</strong> ${product.origin}<br>
                         <strong>Precio FOB:</strong> $${product.fobPrice.toFixed(2)}<br>
-                        <strong>Arancel:</strong> ${(product.tariffRate * 100).toFixed(0)}%<br>
-                        ${product.hasICE ? '<span class="badge badge-ice">Aplica ICE</span>' : ''}
-                        ${product.requiresPermit ? '<span class="badge badge-control">Control Previo</span>' : ''}
+                        <strong>Arancel:</strong> ${(product.tariffRate * 100).toFixed(0)}%
                     </div>
-                    ${product.controlDocs.length ? `
-                        <div style="font-size: 0.85em; color: #666; margin: 10px 0;">
-                            <strong>Docs:</strong> ${product.controlDocs.join(', ')}
-                        </div>
-                    ` : ''}
+                    <div class="risk-details">
+                        <strong>⚠️ Riesgo:</strong> ${product.riskDescription}<br>
+                        <small>Prob. pérdida: ${(product.lossProbability * 100).toFixed(0)}%</small>
+                    </div>
                     <div class="controls">
                         <button class="btn btn-primary" onclick="openImportCalc(${product.id})">Calcular Importación</button>
                     </div>
-                </div>
-            `).join('');
+                </div>`;
+            }).join('');
         }
 
         function renderExportProducts() {
             const container = document.getElementById('exportProducts');
-            container.innerHTML = exportProducts.map(product => `
+            container.innerHTML = exportProducts.map(product => {
+                const riskClass = `risk-${product.riskLevel}`;
+                const riskText = product.riskLevel === 'high' ? 'ALTO RIESGO' : product.riskLevel === 'medium' ? 'Riesgo Medio' : 'Bajo Riesgo';
+                
+                return `
                 <div class="product-card export">
+                    <span class="risk-label ${riskClass}">${riskText}</span>
                     <div class="product-header">
                         <div class="product-title">${product.name}</div>
                         <span class="badge" style="background: #27ae60; color: white;">Export</span>
                     </div>
                     <div class="product-info">
                         <strong>Destino:</strong> ${product.destination}<br>
-                        <strong>Precio FOB:</strong> $${product.fobPrice.toFixed(2)} / ${product.volume}<br>
-                        <strong>Arancel destino:</strong> ${product.tariffDest}<br>
-                        <strong>Margen esperado:</strong> ${(product.profitMargin * 100).toFixed(0)}%
+                        <strong>Precio FOB:</strong> $${product.fobPrice.toFixed(2)}/${product.volume}<br>
+                        <strong>Margen:</strong> ${(product.profitMargin * 100).toFixed(0)}%
                     </div>
-                    <div style="font-size: 0.85em; color: #666; margin: 10px 0;">
-                        <strong>Requisitos:</strong> ${product.requirements.join(', ')}
+                    <div class="risk-details">
+                        <strong>⚠️ Riesgo:</strong> ${product.riskDescription}<br>
+                        <small>Prob. incumplimiento: ${(product.clientRisk * 100).toFixed(0)}%</small>
                     </div>
                     <div class="controls">
                         <button class="btn btn-success" onclick="openExportCalc(${product.id})">Simular Exportación</button>
                     </div>
-                </div>
-            `).join('');
+                </div>`;
+            }).join('');
         }
 
         function openImportCalc(productId) {
             const product = importProducts.find(p => p.id === productId);
-            const modal = document.getElementById('calcModal');
-            const modalBody = document.getElementById('modalBody');
-            
             document.getElementById('modalTitle').textContent = `Importar: ${product.name}`;
-            
-            modalBody.innerHTML = `
-                <div class="form-group">
-                    <label>Cantidad a importar (unidades):</label>
-                    <input type="number" id="importQty" value="100" min="1" onchange="calculateImport(${productId})">
+            document.getElementById('modalBody').innerHTML = `
+                <div class="alert alert-warning">
+                    <strong>⚠️ Advertencia:</strong> Este producto tiene ${(product.lossProbability * 100).toFixed(0)}% probabilidad de pérdida.
                 </div>
                 <div class="form-group">
-                    <label>Precio FOB unitario ($):</label>
-                    <input type="number" id="fobPrice" value="${product.fobPrice}" step="0.01" onchange="calculateImport(${productId})">
+                    <label>Cantidad:</label>
+                    <input type="number" id="importQty" value="100" min="1">
                 </div>
                 <div class="form-group">
-                    <label>Costo de flete (% FOB):</label>
-                    <input type="number" id="fleteRate" value="${(product.fleteRate * 100).toFixed(1)}" step="0.1" onchange="calculateImport(${productId})">
+                    <label>Precio FOB unitario:</label>
+                    <input type="number" id="fobPrice" value="${product.fobPrice}" step="0.01">
                 </div>
-                
-                <div id="importResults" class="calculator active">
-                    <!-- Results will appear here -->
+                <div class="form-group">
+                    <label>Precio de venta estimado:</label>
+                    <input type="number" id="salePrice" placeholder="Ingrese precio" step="0.01">
                 </div>
-                
-                <div class="form-group" style="margin-top: 20px;">
-                    <label>Precio de venta estimado por unidad ($):</label>
-                    <input type="number" id="salePrice" placeholder="Ingrese precio de venta" step="0.01">
+                <div class="form-group">
+                    <label><input type="checkbox" id="acceptRisk"> Acepto el riesgo de pérdida</label>
                 </div>
-                
-                <div class="controls" style="margin-top: 20px;">
-                    <button class="btn btn-success" onclick="confirmImport(${productId})">Confirmar Importación</button>
+                <div class="controls">
+                    <button class="btn btn-success" onclick="confirmImport(${productId})">Confirmar</button>
                     <button class="btn btn-danger" onclick="closeModal()">Cancelar</button>
                 </div>
             `;
-            
-            modal.classList.add('active');
-            calculateImport(productId);
-        }
-
-        function calculateImport(productId) {
-            const product = importProducts.find(p => p.id === productId);
-            const qty = parseInt(document.getElementById('importQty').value) || 0;
-            const fobUnit = parseFloat(document.getElementById('fobPrice').value) || 0;
-            const fletePercent = parseFloat(document.getElementById('fleteRate').value) || 0;
-            
-            // Cálculos según normativa ecuatoriana
-            const totalFOB = qty * fobUnit;
-            const seguro = totalFOB * 0.01; // 1% del FOB
-            const flete = totalFOB * (fletePercent / 100);
-            const cif = totalFOB + flete + seguro;
-            
-            // Aplicar eventos si existen
-            let tariffRate = product.tariffRate;
-            if (currentEvent && currentEvent.effect === 'tariff_discount') {
-                tariffRate = Math.max(0, tariffRate - 0.05);
-            }
-            
-            const advalorem = cif * tariffRate;
-            const fodinfa = cif * 0.005; // 0.5%
-            
-            // Cálculo ICE
-            let ice = 0;
-            if (product.hasICE) {
-                if (product.iceRate) {
-                    ice = cif * product.iceRate;
-                } else if (product.iceSpecific) {
-                    // Simplificación: asumimos volumen estándar
-                    ice = qty * product.iceSpecific * 0.5; // Aproximación
-                }
-            }
-            
-            const baseIVA = cif + advalorem + fodinfa + ice;
-            const iva = baseIVA * 0.15; // 15% IVA Ecuador
-            
-            const totalCost = cif + advalorem + fodinfa + ice + iva;
-            const costPerUnit = totalCost / qty;
-            
-            const resultsDiv = document.getElementById('importResults');
-            resultsDiv.innerHTML = `
-                <h4>Desglose de Costos de Importación</h4>
-                <div class="calc-row">
-                    <span>Valor FOB Total:</span>
-                    <span>$${totalFOB.toFixed(2)}</span>
-                </div>
-                <div class="calc-row">
-                    <span>Flete (${fletePercent}%):</span>
-                    <span>$${flete.toFixed(2)}</span>
-                </div>
-                <div class="calc-row">
-                    <span>Seguro (1% FOB):</span>
-                    <span>$${seguro.toFixed(2)}</span>
-                </div>
-                <div class="calc-row" style="background: #e3f2fd; font-weight: bold;">
-                    <span>Valor CIF:</span>
-                    <span>$${cif.toFixed(2)}</span>
-                </div>
-                <div class="calc-row">
-                    <span>Arancel Advalorem (${(tariffRate * 100).toFixed(0)}%):</span>
-                    <span>$${advalorem.toFixed(2)}</span>
-                </div>
-                <div class="calc-row">
-                    <span>FODINFA (0.5%):</span>
-                    <span>$${fodinfa.toFixed(2)}</span>
-                </div>
-                ${ice ? `
-                <div class="calc-row">
-                    <span>ICE:</span>
-                    <span>$${ice.toFixed(2)}</span>
-                </div>
-                ` : ''}
-                <div class="calc-row">
-                    <span>Base Imponible IVA:</span>
-                    <span>$${baseIVA.toFixed(2)}</span>
-                </div>
-                <div class="calc-row">
-                    <span>IVA (15%):</span>
-                    <span>$${iva.toFixed(2)}</span>
-                </div>
-                <div class="calc-row total">
-                    <span>Total a Pagar en Aduana:</span>
-                    <span>$${totalCost.toFixed(2)}</span>
-                </div>
-                <div class="calc-row total" style="color: #27ae60;">
-                    <span>Costo por Unidad:</span>
-                    <span>$${costPerUnit.toFixed(2)}</span>
-                </div>
-            `;
-            
-            // Guardar valores para confirmación
-            resultsDiv.dataset.totalCost = totalCost;
-            resultsDiv.dataset.costPerUnit = costPerUnit;
-            resultsDiv.dataset.qty = qty;
+            document.getElementById('calcModal').classList.add('active');
         }
 
         function confirmImport(productId) {
             const product = importProducts.find(p => p.id === productId);
-            const salePrice = parseFloat(document.getElementById('salePrice').value);
-            const resultsDiv = document.getElementById('importResults');
-            const totalCost = parseFloat(resultsDiv.dataset.totalCost);
-            const qty = parseInt(resultsDiv.dataset.qty);
-            const costPerUnit = parseFloat(resultsDiv.dataset.costPerUnit);
-            
-            if (!salePrice || salePrice <= costPerUnit) {
-                alert('El precio de venta debe ser mayor al costo por unidad de $' + costPerUnit.toFixed(2));
+            if (!document.getElementById('acceptRisk').checked && product.riskLevel !== 'low') {
+                alert('Debes aceptar el riesgo para continuar.');
                 return;
             }
+            
+            const qty = parseInt(document.getElementById('importQty').value);
+            const fobPrice = parseFloat(document.getElementById('fobPrice').value);
+            const salePrice = parseFloat(document.getElementById('salePrice').value);
+            
+            // Cálculos
+            const totalFOB = qty * fobPrice;
+            const flete = totalFOB * product.fleteRate;
+            const seguro = totalFOB * 0.01;
+            const cif = totalFOB + flete + seguro;
+            const advalorem = cif * product.tariffRate;
+            const fodinfa = cif * 0.005;
+            const ice = product.hasICE ? (product.iceRate ? cif * product.iceRate : qty * 0.5) : 0;
+            const iva = (cif + advalorem + fodinfa + ice) * 0.15;
+            const totalCost = cif + advalorem + fodinfa + ice + iva;
             
             if (totalCost > gameState.capital) {
-                alert('Capital insuficiente para esta operación');
+                alert('Capital insuficiente.');
                 return;
             }
             
-            const revenue = salePrice * qty;
-            const profit = revenue - totalCost;
-            const profitPercent = (profit / totalCost) * 100;
+            // Aplicar riesgo de pérdida
+            let finalRevenue = salePrice * qty;
+            let lossOccurred = false;
+            
+            if (Math.random() < product.lossProbability) {
+                // Pérdida ocurre
+                const lossType = Math.random();
+                if (lossType < 0.33) {
+                    // Precio cayó
+                    finalRevenue *= 0.7;
+                    lossOccurred = true;
+                    alert(`📉 PÉRDIDA: El precio de mercado cayó. Solo recuperas 70% del valor.`);
+                } else if (lossType < 0.66) {
+                    // Producto dañado
+                    finalRevenue *= 0.5;
+                    lossOccurred = true;
+                    alert(`📦 PÉRDIDA: Producto dañado en transporte. Solo vendes 50% al precio de descuento.`);
+                } else {
+                    // Cliente canceló
+                    finalRevenue = 0;
+                    lossOccurred = true;
+                    alert(`❌ PÉRDIDA TOTAL: Cliente canceló pedido. Pierdes toda la inversión.`);
+                }
+                gameState.consecutiveLosses++;
+            } else {
+                gameState.consecutiveLosses = 0;
+            }
+            
+            const profit = finalRevenue - totalCost;
             
             // Actualizar estado
             gameState.capital -= totalCost;
-            gameState.capital += revenue;
+            gameState.capital += finalRevenue;
             gameState.totalProfit += profit;
             gameState.operations++;
-            gameState.experience += Math.floor(profit / 100);
+            gameState.experience += Math.abs(profit) / 100;
             
-            // Agregar al historial
+            if (profit < 0) {
+                gameState.reputation -= 5;
+            } else {
+                gameState.reputation = Math.min(100, gameState.reputation + 2);
+            }
+            
             gameState.history.push({
                 type: 'Importación',
                 product: product.name,
                 qty: qty,
                 investment: totalCost,
-                revenue: revenue,
+                revenue: finalRevenue,
                 profit: profit,
+                loss: lossOccurred,
                 date: new Date().toLocaleString()
             });
             
-            // Verificar subida de nivel
+            checkGameOver();
             checkLevelUp();
-            
-            // Cerrar modal y actualizar
-            closeModal();
             updateStats();
-            renderHistory();
+            closeModal();
             
-            alert(`¡Operación exitosa!\n\nInversión: $${totalCost.toFixed(2)}\nVentas: $${revenue.toFixed(2)}\nUtilidad: $${profit.toFixed(2)} (${profitPercent.toFixed(1)}%)`);
+            const msg = lossOccurred ? 
+                `❌ Operación con PÉRDIDA\nInversión: $${totalCost.toFixed(2)}\nRecuperado: $${finalRevenue.toFixed(2)}\nPérdida: $${Math.abs(profit).toFixed(2)}` :
+                `✅ Operación exitosa\nInversión: $${totalCost.toFixed(2)}\nVentas: $${finalRevenue.toFixed(2)}\nGanancia: $${profit.toFixed(2)}`;
+            alert(msg);
         }
 
-        function openExportCalc(productId) {
-            const product = exportProducts.find(p => p.id === productId);
-            const modal = document.getElementById('calcModal');
-            const modalBody = document.getElementById('modalBody');
+        function checkRandomEvent() {
+            if (Math.random() > 0.6) return; // 40% probabilidad
             
-            document.getElementById('modalTitle').textContent = `Exportar: ${product.name}`;
-            
-            modalBody.innerHTML = `
-                <div class="form-group">
-                    <label>Volumen a exportar:</label>
-                    <input type="number" id="exportQty" value="1000" min="1" onchange="calculateExport(${productId})">
-                </div>
-                <div class="form-group">
-                    <label>Precio FOB unitario ($):</label>
-                    <input type="number" id="exportFobPrice" value="${product.fobPrice}" step="0.01" onchange="calculateExport(${productId})">
-                </div>
-                <div class="form-group">
-                    <label>Costo de producción por unidad ($):</label>
-                    <input type="number" id="productionCost" value="${(product.fobPrice * 0.6).toFixed(2)}" step="0.01" onchange="calculateExport(${productId})">
-                </div>
-                
-                <div id="exportResults" class="calculator active">
-                    <!-- Results will appear here -->
-                </div>
-                
-                <div class="controls" style="margin-top: 20px;">
-                    <button class="btn btn-success" onclick="confirmExport(${productId})">Confirmar Exportación</button>
-                    <button class="btn btn-danger" onclick="closeModal()">Cancelar</button>
-                </div>
-            `;
-            
-            modal.classList.add('active');
-            calculateExport(productId);
+            const decision = criticalDecisions[Math.floor(Math.random() * criticalDecisions.length)];
+            showDecision(decision);
         }
 
-        function calculateExport(productId) {
-            const product = exportProducts.find(p => p.id === productId);
-            const qty = parseInt(document.getElementById('exportQty').value) || 0;
-            const fobUnit = parseFloat(document.getElementById('exportFobPrice').value) || 0;
-            const prodCost = parseFloat(document.getElementById('productionCost').value) || 0;
-            
-            const totalFOB = qty * fobUnit;
-            const totalProductionCost = qty * prodCost;
-            
-            // Costos de exportación (aproximación)
-            const flete = totalFOB * 0.08; // 8% aproximado
-            const seguro = totalFOB * 0.01;
-            const documentacion = 500; // Costo fijo aproximado
-            
-            const totalCosts = totalProductionCost + flete + seguro + documentacion;
-            const profit = totalFOB - totalCosts;
-            const profitMargin = (profit / totalFOB) * 100;
-            
-            const resultsDiv = document.getElementById('exportResults');
-            resultsDiv.innerHTML = `
-                <h4>Análisis de Exportación</h4>
-                <div class="calc-row">
-                    <span>Ingreso FOB Total:</span>
-                    <span>$${totalFOB.toFixed(2)}</span>
+        function showDecision(decision) {
+            document.getElementById('decisionScenario').textContent = decision.scenario;
+            document.getElementById('decisionOptions').innerHTML = decision.options.map((opt, idx) => `
+                <div class="decision-option" onclick="makeDecision('${decision.id}', ${idx})">
+                    <h4>Opción ${String.fromCharCode(65 + idx)}: ${opt.text}</h4>
+                    <div class="consequence">${opt.consequence}</div>
+                    <span class="risk-level risk-${opt.risk}">${opt.risk.toUpperCase()}</span>
                 </div>
-                <div class="calc-row">
-                    <span>Costo de Producción:</span>
-                    <span>$${totalProductionCost.toFixed(2)}</span>
-                </div>
-                <div class="calc-row">
-                    <span>Flete Internacional (est.):</span>
-                    <span>$${flete.toFixed(2)}</span>
-                </div>
-                <div class="calc-row">
-                    <span>Seguro:</span>
-                    <span>$${seguro.toFixed(2)}</span>
-                </div>
-                <div class="calc-row">
-                    <span>Documentación:</span>
-                    <span>$${documentacion.toFixed(2)}</span>
-                </div>
-                <div class="calc-row total">
-                    <span>Costos Totales:</span>
-                    <span>$${totalCosts.toFixed(2)}</span>
-                </div>
-                <div class="calc-row total" style="color: ${profit > 0 ? '#27ae60' : '#e74c3c'};">
-                    <span>Utilidad Estimada:</span>
-                    <span>$${profit.toFixed(2)} (${profitMargin.toFixed(1)}%)</span>
-                </div>
-            `;
-            
-            resultsDiv.dataset.totalFOB = totalFOB;
-            resultsDiv.dataset.profit = profit;
-            resultsDiv.dataset.qty = qty;
+            `).join('');
+            document.getElementById('decisionModal').classList.add('active');
         }
 
-        function confirmExport(productId) {
-            const product = exportProducts.find(p => p.id === productId);
-            const resultsDiv = document.getElementById('exportResults');
-            const totalFOB = parseFloat(resultsDiv.dataset.totalFOB);
-            const profit = parseFloat(resultsDiv.dataset.profit);
-            const qty = parseInt(resultsDiv.dataset.qty);
+        function makeDecision(decisionId, optionIdx) {
+            const decision = criticalDecisions.find(d => d.id === decisionId);
+            const option = decision.options[optionIdx];
             
-            // Para exportar necesitas capital para costos de producción
-            const productionCost = totalFOB * 0.6; // Aproximación
+            document.getElementById('decisionModal').classList.remove('active');
             
-            if (productionCost > gameState.capital) {
-                alert('Capital insuficiente para costos de producción');
+            // Aplicar consecuencias
+            if (option.jailProbability && Math.random() < option.jailProbability) {
+                gameOver('CÁRCEL: Intentaste sobornar a un funcionario. Game Over.');
                 return;
             }
             
-            // Actualizar estado
-            gameState.capital -= productionCost;
-            gameState.capital += totalFOB;
-            gameState.totalProfit += profit;
-            gameState.operations++;
-            gameState.experience += Math.floor(profit / 100);
-            gameState.reputation = Math.min(100, gameState.reputation + 2);
+            if (option.successRate !== undefined) {
+                if (Math.random() > option.successRate) {
+                    alert(`❌ La negociación falló. ${option.consequence}`);
+                    gameState.reputation += option.reputationEffect * 2;
+                } else {
+                    alert(`✅ La negociación funcionó.`);
+                }
+            }
             
-            gameState.history.push({
-                type: 'Exportación',
-                product: product.name,
-                qty: qty,
-                investment: productionCost,
-                revenue: totalFOB,
-                profit: profit,
-                date: new Date().toLocaleString()
-            });
+            if (option.capitalEffect < 0) {
+                const loss = Math.abs(option.capitalEffect) * gameState.capital;
+                gameState.capital -= loss;
+            } else if (option.capitalEffect > 0) {
+                gameState.capital += option.capitalEffect;
+            }
             
-            checkLevelUp();
-            closeModal();
+            gameState.reputation = Math.max(0, Math.min(100, gameState.reputation + option.reputationEffect));
+            
+            checkGameOver();
             updateStats();
-            renderHistory();
+        }
+
+        function takeLoan() {
+            const amount = prompt('¿Cuánto quieres pedir prestado? (Máx: $' + (gameState.creditLimit - gameState.debt) + ')');
+            if (!amount) return;
             
-            alert(`¡Exportación exitosa!\nFOB: $${totalFOB.toFixed(2)}\nUtilidad: $${profit.toFixed(2)}`);
+            const numAmount = parseFloat(amount);
+            if (numAmount > gameState.creditLimit - gameState.debt) {
+                alert('Excedes tu límite de crédito.');
+                return;
+            }
+            
+            gameState.debt += numAmount;
+            gameState.capital += numAmount;
+            updateStats();
+            alert(`💰 Préstamo aprobado: $${numAmount.toLocaleString()}\nDeuda total: $${gameState.debt.toLocaleString()}\nInterés mensual: 5%`);
+        }
+
+        function payDebt() {
+            if (gameState.debt === 0) {
+                alert('No tienes deuda.');
+                return;
+            }
+            
+            const amount = prompt(`¿Cuánto quieres pagar? (Deuda: $${gameState.debt.toLocaleString()})`);
+            if (!amount) return;
+            
+            const numAmount = Math.min(parseFloat(amount), gameState.debt, gameState.capital);
+            
+            gameState.debt -= numAmount;
+            gameState.capital -= numAmount;
+            updateStats();
+            alert(`💵 Pago realizado: $${numAmount.toLocaleString()}\nDeuda restante: $${gameState.debt.toLocaleString()}`);
+        }
+
+        function applyInterest() {
+            if (gameState.debt > 0) {
+                const interest = gameState.debt * 0.05;
+                gameState.debt += interest;
+                alert(`🏦 Interés bancario aplicado: $${interest.toFixed(2)}\nNueva deuda: $${gameState.debt.toFixed(2)}`);
+                
+                if (gameState.debt > gameState.capital * 3) {
+                    gameOver('QUiebra por sobreendeudamiento. El banco ejecutó tu empresa.');
+                }
+            }
+        }
+
+        function checkGameOver() {
+            if (gameState.capital <= 0) {
+                gameOver('Capital agotado. Tu empresa ha quebrado.');
+            } else if (gameState.reputation <= 0) {
+                gameOver('Reputación destruida. Nadie quiere hacer negocios contigo.');
+            } else if (gameState.consecutiveLosses >= 3) {
+                gameOver('3 pérdidas consecutivas. Los inversores retiran su apoyo.');
+            }
+        }
+
+        function gameOver(reason) {
+            document.getElementById('gameOverReason').textContent = reason;
+            document.getElementById('finalOperations').textContent = gameState.operations;
+            document.getElementById('finalProfit').textContent = '$' + gameState.totalProfit.toLocaleString();
+            document.getElementById('finalLevel').textContent = gameState.level;
+            document.getElementById('finalReputation').textContent = gameState.reputation + '%';
+            document.getElementById('gameOverOverlay').classList.add('active');
+        }
+
+        function restartGame() {
+            location.reload();
         }
 
         function checkLevelUp() {
             const levels = [
-                { level: 1, name: "Importador Principiante", xp: 0 },
-                { level: 2, name: "Comerciante Junior", xp: 1000 },
-                { level: 3, name: "Importador Experto", xp: 3000 },
-                { level: 4, name: "Exportador Profesional", xp: 6000 },
-                { level: 5, name: "Magnate del Comercio", xp: 10000 }
+                { level: 1, name: "Novato", xp: 0 },
+                { level: 2, name: "Aprendiz", xp: 1000 },
+                { level: 3, name: "Comerciante", xp: 3000 },
+                { level: 4, name: "Experto", xp: 6000 },
+                { level: 5, name: "Magnate", xp: 10000 }
             ];
             
-            for (let i = levels.length - 1; i >= 0; i--) {
-                if (gameState.experience >= levels[i].xp && gameState.level < levels[i].level) {
-                    gameState.level = levels[i].level;
-                    document.getElementById('levelNum').textContent = levels[i].level;
-                    document.getElementById('levelName').textContent = levels[i].name;
-                    alert(`¡Felicidades! Has subido al Nivel ${levels[i].level}: ${levels[i].name}`);
-                    break;
+            for (let lvl of levels) {
+                if (gameState.experience >= lvl.xp && gameState.level < lvl.level) {
+                    gameState.level = lvl.level;
+                    alert(`🎉 ¡Subiste a Nivel ${lvl.level}: ${lvl.name}!`);
                 }
             }
-            
-            // Actualizar barra de progreso
-            const currentLevelXP = levels[gameState.level - 1].xp;
-            const nextLevelXP = levels[gameState.level] ? levels[gameState.level].xp : currentLevelXP * 2;
-            const progress = ((gameState.experience - currentLevelXP) / (nextLevelXP - currentLevelXP)) * 100;
-            document.getElementById('progressBar').style.width = Math.min(100, progress) + '%';
-            document.getElementById('progressBar').textContent = Math.floor(progress) + '%';
-        }
-
-        function checkRandomEvent() {
-            if (Math.random() > 0.7 && !currentEvent) { // 30% probabilidad
-                currentEvent = randomEvents[Math.floor(Math.random() * randomEvents.length)];
-                showEvent(currentEvent);
-            }
-        }
-
-        function showEvent(event) {
-            const banner = document.getElementById('eventBanner');
-            document.getElementById('eventTitle').textContent = event.title;
-            document.getElementById('eventDescription').textContent = event.description;
-            banner.classList.add('active');
-        }
-
-        function handleEvent() {
-            if (!currentEvent) return;
-            
-            // Efectos simplificados
-            switch(currentEvent.effect) {
-                case 'flete_increase':
-                    // Aumenta costos de flete temporalmente
-                    break;
-                case 'tariff_discount':
-                    // Descuento en aranceles ya aplicado en cálculos
-                    break;
-            }
-            
-            alert('Has tomado una decisión ante el evento. Continúa operando con precaución.');
-            document.getElementById('eventBanner').classList.remove('active');
-            
-            setTimeout(() => {
-                currentEvent = null;
-            }, currentEvent.duration * 1000);
         }
 
         function updateStats() {
-            document.getElementById('capital').textContent = '$' + gameState.capital.toLocaleString();
+            document.getElementById('capital').textContent = '$' + Math.floor(gameState.capital).toLocaleString();
             document.getElementById('operations').textContent = gameState.operations;
-            document.getElementById('profit').textContent = '$' + gameState.totalProfit.toLocaleString();
+            document.getElementById('profit').textContent = '$' + Math.floor(gameState.totalProfit).toLocaleString();
             document.getElementById('reputation').textContent = gameState.reputation + '%';
             document.getElementById('level').textContent = gameState.level;
-            document.getElementById('experience').textContent = gameState.experience + ' XP';
+            document.getElementById('experience').textContent = Math.floor(gameState.experience) + ' XP';
+            document.getElementById('currentDebt').textContent = '$' + gameState.debt.toLocaleString();
+            
+            // Colores según estado
+            document.getElementById('capitalCard').className = 'stat-card' + (gameState.capital < 20000 ? ' danger' : gameState.capital < 40000 ? ' warning' : '');
+            document.getElementById('reputationCard').className = 'stat-card' + (gameState.reputation < 50 ? ' danger' : gameState.reputation < 75 ? ' warning' : '');
+            
+            document.getElementById('bankruptcyBtn').style.display = gameState.capital < 0 ? 'block' : 'none';
         }
 
-        function renderHistory() {
-            const container = document.getElementById('historyList');
-            if (gameState.history.length === 0) return;
-            
-            container.innerHTML = gameState.history.slice().reverse().map(op => `
-                <div class="history-item ${op.profit > 0 ? 'success' : 'danger'}">
-                    <strong>${op.type}:</strong> ${op.product}<br>
-                    <small>${op.date}</small><br>
-                    Cantidad: ${op.qty} | Inversión: $${op.investment.toFixed(2)}<br>
-                    Ingreso: $${op.revenue.toFixed(2)} | 
-                    <strong>Utilidad: $${op.profit.toFixed(2)}</strong>
-                </div>
-            `).join('');
+        function showTab(tabName) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
         }
 
         function closeModal() {
             document.getElementById('calcModal').classList.remove('active');
         }
 
-        // Cerrar modal al hacer clic fuera
-        window.onclick = function(event) {
-            const modal = document.getElementById('calcModal');
-            if (event.target === modal) {
-                closeModal();
+        function setDifficulty(level) {
+            gameState.difficulty = level;
+            document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (level === 'easy') {
+                gameState.capital = 75000;
+                gameState.creditLimit = 150000;
+            } else if (level === 'hard') {
+                gameState.capital = 30000;
+                gameState.creditLimit = 50000;
             }
+            updateStats();
         }
     </script>
 </body>

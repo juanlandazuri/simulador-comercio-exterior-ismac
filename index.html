@@ -3,952 +3,1975 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TradeMaster Ecuador 2.0 - Simulador Avanzado | ISMAC</title>
+    <title>Trade Master Pro Ecuador - Simulador de Comercio Exterior</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             min-height: 100vh;
             color: #333;
+            padding: 20px;
         }
-        
-        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
-        
-        header {
-            text-align: center;
-            color: white;
-            padding: 30px 0;
-            background: rgba(0,0,0,0.3);
-            border-radius: 15px;
-            margin-bottom: 30px;
-        }
-        
-        header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            background: linear-gradient(45deg, #f39c12, #e74c3c);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .version-badge {
-            display: inline-block;
-            background: #e74c3c;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9em;
-            font-weight: bold;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-        
-        .game-panel {
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
             background: white;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
         }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .stat-card {
+
+        .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 20px;
-            border-radius: 10px;
+            padding: 30px;
             text-align: center;
-            transition: transform 0.3s;
+            position: relative;
+            overflow: hidden;
         }
-        
-        .stat-card:hover { transform: translateY(-5px); }
-        .stat-card.danger { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); }
-        .stat-card.warning { background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); }
-        
-        .stat-card h3 { font-size: 0.85em; opacity: 0.9; margin-bottom: 5px; }
-        .stat-card .value { font-size: 1.6em; font-weight: bold; }
-        .stat-card .sub-value { font-size: 0.8em; opacity: 0.8; margin-top: 5px; }
-        
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        
-        .tab {
-            padding: 12px 24px;
-            background: #e0e0e0;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
+
+        .header::before {
+            content: '🌐';
+            position: absolute;
+            font-size: 200px;
+            opacity: 0.1;
+            top: -50px;
+            right: -50px;
+            animation: float 6s ease-in-out infinite;
         }
-        
-        .tab.active { background: #2a5298; color: white; }
-        .tab:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-        
-        .content-section { display: none; }
-        .content-section.active { display: block; animation: fadeIn 0.5s; }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
         }
-        
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
-        
-        .product-card {
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .game-area {
+            padding: 30px;
+            min-height: 600px;
+        }
+
+        .phase-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
             padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .phase-step {
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+            padding: 15px 10px;
+            border-radius: 10px;
+            background: #e9ecef;
             transition: all 0.3s;
             position: relative;
+            font-weight: 600;
+            font-size: 0.9em;
         }
-        
-        .product-card:hover {
-            border-color: #2a5298;
-            transform: translateY(-5px);
+
+        .phase-step.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .phase-step.completed {
+            background: #28a745;
+            color: white;
+        }
+
+        .phase-step::after {
+            content: '→';
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #adb5bd;
+            font-size: 1.2em;
+        }
+
+        .phase-step:last-child::after {
+            display: none;
+        }
+
+        .content-box {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .content-box h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .option-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-card:hover {
+            border-color: #667eea;
+            transform: translateY(-3px);
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
-        
-        .product-card.import { border-left: 5px solid #e74c3c; }
-        .product-card.export { border-left: 5px solid #27ae60; }
-        
-        .risk-label {
+
+        .option-card.selected {
+            border-color: #28a745;
+            background: #d4edda;
+            transform: scale(1.02);
+        }
+
+        .option-card.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .option-card .icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .option-card h3 {
+            color: #495057;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .option-card p {
+            color: #6c757d;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        .option-card .price-tag {
             position: absolute;
             top: 10px;
             right: 10px;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.7em;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-        
-        .risk-low { background: #d4edda; color: #155724; }
-        .risk-medium { background: #fff3cd; color: #856404; }
-        .risk-high { background: #f8d7da; color: #721c24; animation: pulse 2s infinite; }
-        
-        .product-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px; padding-right: 60px; }
-        .product-title { font-size: 1.2em; font-weight: bold; color: #2c3e50; }
-        
-        .tariff-code {
-            background: #f39c12;
+            background: #667eea;
             color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
+            padding: 5px 10px;
+            border-radius: 20px;
             font-size: 0.8em;
-            font-family: monospace;
-        }
-        
-        .product-info { margin: 10px 0; font-size: 0.95em; color: #555; }
-        .product-info strong { color: #2c3e50; }
-        
-        .risk-details {
-            background: #f8f9fa;
-            border-left: 3px solid #e74c3c;
-            padding: 10px;
-            margin: 10px 0;
-            font-size: 0.85em;
-            color: #666;
-        }
-        
-        .controls { margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap; }
-        
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
             font-weight: bold;
-            transition: all 0.3s;
-            flex: 1;
-            min-width: 100px;
         }
-        
-        .btn-primary { background: #3498db; color: white; }
-        .btn-success { background: #27ae60; color: white; }
-        .btn-danger { background: #e74c3c; color: white; }
-        .btn-warning { background: #f39c12; color: white; }
-        .btn-purple { background: #9b59b6; color: white; }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-        
-        .calculator {
-            background: #f8f9fa;
-            border-radius: 10px;
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
             padding: 20px;
-            margin-top: 15px;
-            display: none;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-top: 4px solid;
         }
-        
-        .calculator.active { display: block; animation: slideDown 0.3s; }
-        
-        @keyframes slideDown {
-            from { opacity: 0; max-height: 0; }
-            to { opacity: 1; max-height: 1000px; }
-        }
-        
-        .calc-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #dee2e6; }
-        
-        .calc-row.total {
+
+        .stat-card.capital { border-top-color: #28a745; }
+        .stat-card.risk { border-top-color: #dc3545; }
+        .stat-card.profit { border-top-color: #ffc107; }
+        .stat-card.reputation { border-top-color: #17a2b8; }
+
+        .stat-value {
+            font-size: 1.8em;
             font-weight: bold;
-            color: #2c3e50;
-            font-size: 1.1em;
-            border-top: 2px solid #2c3e50;
-            border-bottom: none;
-            margin-top: 10px;
-            padding-top: 10px;
+            color: #495057;
+            margin: 10px 0;
         }
-        
-        .calc-row.risk { background: #fff3cd; padding: 10px; border-radius: 5px; margin: 5px 0; }
-        
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
         .event-banner {
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             color: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
             text-align: center;
             animation: pulse 2s infinite;
-            display: none;
+            position: relative;
+            overflow: hidden;
         }
-        
-        .event-banner.active { display: block; }
-        
-        .decision-modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            z-index: 3000;
-            justify-content: center;
-            align-items: center;
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
         }
-        
-        .decision-modal.active { display: flex; }
-        
-        .decision-content {
-            background: white;
-            padding: 30px;
+
+        .event-banner::before {
+            content: '⚠️';
+            position: absolute;
+            font-size: 100px;
+            opacity: 0.2;
+            left: -20px;
+            top: -20px;
+        }
+
+        .calculator-box {
+            background: #2c3e50;
+            color: white;
+            padding: 25px;
             border-radius: 15px;
-            max-width: 700px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            border: 3px solid #e74c3c;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
         }
-        
-        .decision-content h2 { color: #e74c3c; margin-bottom: 15px; text-align: center; }
-        
-        .decision-content .scenario {
-            background: #fff3cd;
-            border-left: 5px solid #f39c12;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 0 8px 8px 0;
-            font-size: 1.1em;
+
+        .calculator-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #34495e;
         }
-        
-        .decision-options { display: grid; gap: 15px; margin: 20px 0; }
-        
-        .decision-option {
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            padding: 15px;
-            cursor: pointer;
-            transition: all 0.3s;
-            background: #f8f9fa;
-        }
-        
-        .decision-option:hover {
-            border-color: #3498db;
-            background: #e3f2fd;
-            transform: translateX(5px);
-        }
-        
-        .decision-option h4 { color: #2c3e50; margin-bottom: 8px; }
-        .decision-option .consequence { font-size: 0.9em; color: #666; }
-        
-        .decision-option .risk-level {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 0.75em;
-            margin-top: 8px;
+
+        .calculator-row.total {
+            border-top: 2px solid #e74c3c;
+            border-bottom: none;
+            font-size: 1.2em;
             font-weight: bold;
+            color: #2ecc71;
+            margin-top: 10px;
+            padding-top: 15px;
         }
-        
-        .risk-safe { background: #d4edda; color: #155724; }
-        .risk-risky { background: #fff3cd; color: #856404; }
-        .risk-dangerous { background: #f8d7da; color: #721c24; }
-        
+
         .modal {
             display: none;
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
             z-index: 1000;
             justify-content: center;
             align-items: center;
         }
-        
-        .modal.active { display: flex; }
-        
+
         .modal-content {
             background: white;
-            padding: 30px;
-            border-radius: 15px;
+            padding: 40px;
+            border-radius: 20px;
             max-width: 600px;
             width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            animation: modalIn 0.3s;
+            text-align: center;
+            animation: modalPop 0.3s ease-out;
         }
-        
-        @keyframes modalIn {
+
+        @keyframes modalPop {
             from { transform: scale(0.8); opacity: 0; }
             to { transform: scale(1); opacity: 1; }
         }
-        
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .close-btn { font-size: 1.5em; cursor: pointer; color: #999; }
-        .close-btn:hover { color: #333; }
-        
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #ddd;
-            border-radius: 6px;
-            font-size: 1em;
-        }
-        
-        .history-list { max-height: 300px; overflow-y: auto; }
-        
-        .history-item {
-            padding: 15px;
-            border-left: 4px solid #3498db;
-            background: #f8f9fa;
-            margin-bottom: 10px;
-            border-radius: 0 8px 8px 0;
-        }
-        
-        .history-item.success { border-left-color: #27ae60; }
-        .history-item.danger { border-left-color: #e74c3c; }
-        .history-item.warning { border-left-color: #f39c12; }
-        
+
         .progress-bar {
             width: 100%;
             height: 20px;
-            background: #e0e0e0;
+            background: #e9ecef;
             border-radius: 10px;
             overflow: hidden;
-            margin-top: 10px;
+            margin: 10px 0;
         }
-        
+
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #27ae60, #2ecc71);
-            transition: width 0.5s;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
+            font-size: 0.8em;
             font-weight: bold;
+        }
+
+        .log-entry {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
             font-size: 0.9em;
         }
-        
-        .alert { padding: 15px; border-radius: 8px; margin-bottom: 15px; }
-        .alert-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
-        .alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
-        .alert-danger { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        
-        .level-indicator { text-align: center; margin: 20px 0; }
-        
-        .level-badge {
+
+        .log-entry.success { border-left-color: #28a745; }
+        .log-entry.warning { border-left-color: #ffc107; }
+        .log-entry.danger { border-left-color: #dc3545; }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.8em; }
+            .phase-step::after { display: none; }
+            .option-grid { grid-template-columns: 1fr; }
+        }
+
+        .hidden { display: none !important; }
+
+        .flag {
+            font-size: 1.5em;
+            margin-right: 5px;
+        }
+
+        .risk-indicator {
             display: inline-block;
-            background: gold;
-            color: #333;
-            padding: 10px 30px;
-            border-radius: 25px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
             font-weight: bold;
-            font-size: 1.2em;
+            text-transform: uppercase;
         }
-        
-        .bank-panel {
-            background: linear-gradient(135deg, #2c3e50, #34495e);
+
+        .risk-low { background: #d4edda; color: #155724; }
+        .risk-medium { background: #fff3cd; color: #856404; }
+        .risk-high { background: #f8d7da; color: #721c24; }
+
+        .tooltip {
+            position: relative;
+            cursor: help;
+        }
+
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
             color: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.8em;
+            white-space: nowrap;
+            z-index: 100;
         }
-        
-        .bank-panel h3 { margin-bottom: 15px; color: #f39c12; }
-        
-        .loan-info { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 15px 0; }
-        
-        .loan-stat { background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; text-align: center; }
-        .loan-stat .label { font-size: 0.8em; opacity: 0.8; }
-        .loan-stat .value { font-size: 1.3em; font-weight: bold; color: #f39c12; }
-        
-        .futures-panel {
-            background: linear-gradient(135deg, #8e44ad, #9b59b6);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-        
-        .game-over-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 5000;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-        
-        .game-over-overlay.active { display: flex; }
-        
-        .game-over-content { text-align: center; color: white; }
-        .game-over-content h1 { font-size: 4em; color: #e74c3c; margin-bottom: 20px; }
-        .game-over-content p { font-size: 1.5em; margin-bottom: 30px; }
-        
-        .final-stats { background: rgba(255,255,255,0.1); padding: 30px; border-radius: 15px; margin: 20px 0; }
-        
-        .difficulty-selector { background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: center; }
-        
-        .difficulty-btn {
-            padding: 10px 30px;
-            margin: 5px;
-            border: 2px solid #ddd;
-            background: white;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-        
-        .difficulty-btn:hover { transform: translateY(-2px); }
-        .difficulty-btn.active { background: #2a5298; color: white; border-color: #2a5298; }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>🌎 TradeMaster Ecuador 2.0</h1>
-            <p>Simulador Avanzado de Comercio Exterior - Instituto Tecnológico ISMAC</p>
-            <p>Nivel 4to - Gestión de Riesgos y Toma de Decisiones</p>
-            <span class="version-badge">⚡ VERSIÓN 2.0 - AHORA CON RIESGO REAL</span>
-        </header>
-        let gameState = {
-            capital: 50000,
-            operations: 0,
-            totalProfit: 0,
-            reputation: 100,
-            level: 1,
-            experience: 0,
-            history: [],
-            debt: 0,
-            creditLimit: 100000,
-            difficulty: 'normal',
-            consecutiveLosses: 0
+        <div class="header">
+            <h1>🌐 Trade Master Pro Ecuador</h1>
+            <p>Simulador Completo de Comercio Exterior</p>
+        </div>
+
+        <div class="game-area" id="gameArea">
+            <!-- Pantalla de Inicio -->
+            <div id="startScreen" class="screen">
+                <div class="content-box">
+                    <h2>⚙️ Configuración Inicial</h2>
+                    <p style="margin-bottom: 20px; color: #6c757d;">Configura tu perfil de empresario para comenzar tu carrera en el comercio internacional.</p>
+                    
+                    <div class="option-grid">
+                        <div class="option-card" onclick="selectConfig('capital', 25000, this)">
+                            <span class="icon">💰</span>
+                            <h3>$25,000</h3>
+                            <p>Capital inicial modesto. Ideal para aprender con operaciones pequeñas.</p>
+                            <span class="price-tag">Inicio</span>
+                        </div>
+                        <div class="option-card" onclick="selectConfig('capital', 50000, this)">
+                            <span class="icon">💰💰</span>
+                            <h3>$50,000</h3>
+                            <p>Balance entre riesgo y oportunidad. Recomendado para principiantes.</p>
+                            <span class="price-tag">Recomendado</span>
+                        </div>
+                        <div class="option-card" onclick="selectConfig('capital', 100000, this)">
+                            <span class="icon">💰💰💰</span>
+                            <h3>$100,000</h3>
+                            <p>Capital serio. Permite operaciones diversificadas desde el inicio.</p>
+                            <span class="price-tag">Avanzado</span>
+                        </div>
+                        <div class="option-card" onclick="selectConfig('capital', 250000, this)">
+                            <span class="icon">🏆</span>
+                            <h3>$250,000</h3>
+                            <p>Gran inversión. Riesgos altos pero potencial de crecimiento masivo.</p>
+                            <span class="price-tag">Experto</span>
+                        </div>
+                    </div>
+
+                    <h3 style="margin: 30px 0 15px; color: #495057;">Modalidad de Operación</h3>
+                    <div class="option-grid">
+                        <div class="option-card" onclick="selectConfig('modalidad', 'import', this)">
+                            <span class="icon">📥</span>
+                            <h3>Importación</h3>
+                            <p>Trae productos al Ecuador desde el extranjero. Mayor variedad de opciones.</p>
+                        </div>
+                        <div class="option-card" onclick="selectConfig('modalidad', 'export', this)">
+                            <span class="icon">📤</span>
+                            <h3>Exportación</h3>
+                            <p>Vende productos ecuatorianos al mundo. Menor margen pero más estable.</p>
+                        </div>
+                        <div class="option-card" onclick="selectConfig('modalidad', 'mixto', this)">
+                            <span class="icon">🔄</span>
+                            <h3>Mixto</h3>
+                            <p>Combina importación y exportación. Mayor complejidad pero diversificación total.</p>
+                            <span class="price-tag">Pro</span>
+                        </div>
+                    </div>
+
+                    <h3 style="margin: 30px 0 15px; color: #495057;">Nivel de Dificultad</h3>
+                    <div class="option-grid">
+                        <div class="option-card" onclick="selectConfig('nivel', 'principiante', this)">
+                            <span class="icon">🎓</span>
+                            <h3>Principiante</h3>
+                            <p>Tutorías activas, eventos suaves, cálculos asistidos. Aprende sin riesgo.</p>
+                        </div>
+                        <div class="option-card" onclick="selectConfig('nivel', 'avanzado', this)">
+                            <span class="icon">⚡</span>
+                            <h3>Avanzado</h3>
+                            <p>Decisiones libres, eventos reales, mercado competitivo. Para quienes saben.</p>
+                        </div>
+                        <div class="option-card" onclick="selectConfig('nivel', 'experto', this)">
+                            <span class="icon">🔥</span>
+                            <h3>Experto</h3>
+                            <p>Crisis extremas, volatilidad máxima, un error te puede arruinar.</p>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button class="btn btn-primary" onclick="startGame()" id="startBtn" disabled>Comenzar Simulación</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pantalla de Juego Principal -->
+            <div id="gameScreen" class="screen hidden">
+                <div class="stats-bar">
+                    <div class="stat-card capital">
+                        <div class="stat-label">Capital Disponible</div>
+                        <div class="stat-value" id="statCapital">$0</div>
+                    </div>
+                    <div class="stat-card profit">
+                        <div class="stat-label">Operaciones</div>
+                        <div class="stat-value" id="statOps">0</div>
+                    </div>
+                    <div class="stat-card reputation">
+                        <div class="stat-label">Reputación</div>
+                        <div class="stat-value" id="statRep">50/100</div>
+                    </div>
+                    <div class="stat-card risk">
+                        <div class="stat-label">Nivel</div>
+                        <div class="stat-value" id="statLevel">Novato</div>
+                    </div>
+                </div>
+
+                <div class="phase-indicator" id="phaseIndicator">
+                    <div class="phase-step active" data-phase="1">1. Investigación</div>
+                    <div class="phase-step" data-phase="2">2. Negociación</div>
+                    <div class="phase-step" data-phase="3">3. Logística</div>
+                    <div class="phase-step" data-phase="4">4. Aduanas</div>
+                    <div class="phase-step" data-phase="5">5. Distribución</div>
+                    <div class="phase-step" data-phase="6">6. Resultados</div>
+                </div>
+
+                <div id="phaseContent">
+                    <!-- Contenido dinámico de fases -->
+                </div>
+            </div>
+
+            <!-- Modal de Eventos -->
+            <div id="eventModal" class="modal">
+                <div class="modal-content">
+                    <h2 id="eventTitle">🎲 Evento Aleatorio</h2>
+                    <p id="eventDescription" style="margin: 20px 0; font-size: 1.1em;"></p>
+                    <div id="eventOptions"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Estado del juego
+        const gameState = {
+            capital: 0,
+            modalidad: '',
+            nivel: '',
+            fase: 1,
+            operaciones: [],
+            reputacion: 50,
+            nivelJugador: 'Novato',
+            operacionActual: {},
+            config: {}
         };
 
-        // Productos con riesgo
-        const importProducts = [
-            {
-                id: 1,
-                name: "Smartphones 5G",
-                tariffCode: "8517.12.00.00",
-                origin: "China / USA / Corea",
-                fobPrice: 300,
-                tariffRate: 0,
-                hasICE: false,
-                requiresPermit: false,
-                fleteRate: 0.05,
-                riskLevel: 'low',
-                riskDescription: 'Bajo riesgo: Tecnología estable',
-                lossProbability: 0.1
+        // Base de datos de países y productos
+        const paisesImportacion = {
+            china: {
+                nombre: 'China',
+                flag: '🇨🇳',
+                ciudades: ['Shanghai', 'Shenzhen', 'Guangzhou'],
+                productos: [
+                    { nombre: 'Smartphones', categoria: 'Tecnología', precioFOB: 150, arancel: 0, riesgo: 'medio', moq: 500 },
+                    { nombre: 'Laptops', categoria: 'Tecnología', precioFOB: 400, arancel: 0, riesgo: 'medio', moq: 100 },
+                    { nombre: 'Ropa Textil', categoria: 'Textil', precioFOB: 8, arancel: 15, riesgo: 'bajo', moq: 1000 },
+                    { nombre: 'Juguetes', categoria: 'Varios', precioFOB: 5, arancel: 20, riesgo: 'medio', moq: 2000 },
+                    { nombre: 'Componentes Electrónicos', categoria: 'Tecnología', precioFOB: 50, arancel: 0, riesgo: 'alto', moq: 1000 },
+                    { nombre: 'Muebles', categoria: 'Hogar', precioFOB: 120, arancel: 15, riesgo: 'medio', moq: 50 },
+                    { nombre: 'Paneles Solares', categoria: 'Energía', precioFOB: 200, arancel: 0, riesgo: 'medio', moq: 100 }
+                ],
+                tiempoMaritimo: 30,
+                tiempoAereo: 4,
+                riesgoPais: 'medio'
             },
-            {
-                id: 2,
-                name: "Vino Tinto Premium",
-                tariffCode: "2204.21.00.00",
-                origin: "Argentina / Chile / España",
-                fobPrice: 15,
-                tariffRate: 0.10,
-                hasICE: true,
-                iceRate: 0.05,
-                requiresPermit: true,
-                fleteRate: 0.08,
-                riskLevel: 'medium',
-                riskDescription: 'Riesgo medio: Control sanitario estricto',
-                lossProbability: 0.25
+            usa: {
+                nombre: 'Estados Unidos',
+                flag: '🇺🇸',
+                ciudades: ['Miami', 'Los Ángeles', 'Houston', 'Nueva York'],
+                productos: [
+                    { nombre: 'Tecnología Avanzada', categoria: 'Tecnología', precioFOB: 800, arancel: 0, riesgo: 'bajo', moq: 50 },
+                    { nombre: 'Maquinaria Agrícola', categoria: 'Agrícola', precioFOB: 5000, arancel: 0, riesgo: 'bajo', moq: 1 },
+                    { nombre: 'Autopartes', categoria: 'Automotriz', precioFOB: 300, arancel: 10, riesgo: 'bajo', moq: 100 },
+                    { nombre: 'Equipos Médicos', categoria: 'Salud', precioFOB: 2000, arancel: 0, riesgo: 'bajo', moq: 10 },
+                    { nombre: 'Software Licencias', categoria: 'Tecnología', precioFOB: 100, arancel: 0, riesgo: 'bajo', moq: 100 }
+                ],
+                tiempoMaritimo: 10,
+                tiempoAereo: 2,
+                riesgoPais: 'bajo'
             },
-            {
-                id: 3,
-                name: "Petróleo Crudo",
-                tariffCode: "2709.00.00.00",
-                origin: "Medio Oriente / USA",
-                fobPrice: 75,
-                tariffRate: 0,
-                hasICE: false,
-                requiresPermit: true,
-                fleteRate: 0.03,
-                riskLevel: 'high',
-                riskDescription: '⚠️ ALTO RIESGO: Precio fluctúa ±30%',
-                lossProbability: 0.45,
-                priceVolatility: 0.30
-            }
-        ];
-
-        const exportProducts = [
-            {
-                id: 101,
-                name: "Banano Orgánico",
-                destination: "USA / UE",
-                fobPrice: 8,
-                volume: "Cajas 18kg",
-                profitMargin: 0.25,
-                riskLevel: 'medium',
-                riskDescription: 'Riesgo medio: Cadena de frío',
-                lossProbability: 0.20,
-                clientRisk: 0.10
+            alemania: {
+                nombre: 'Alemania',
+                flag: '🇩🇪',
+                ciudades: ['Hamburgo', 'Bremen'],
+                productos: [
+                    { nombre: 'Maquinaria Industrial', categoria: 'Industrial', precioFOB: 15000, arancel: 0, riesgo: 'bajo', moq: 1 },
+                    { nombre: 'Autos', categoria: 'Automotriz', precioFOB: 25000, arancel: 35, riesgo: 'bajo', moq: 1 },
+                    { nombre: 'Equipos Médicos Premium', categoria: 'Salud', precioFOB: 5000, arancel: 0, riesgo: 'bajo', moq: 5 },
+                    { nombre: 'Tecnología Verde', categoria: 'Energía', precioFOB: 3000, arancel: 0, riesgo: 'medio', moq: 20 }
+                ],
+                tiempoMaritimo: 25,
+                tiempoAereo: 3,
+                riesgoPais: 'bajo'
             },
-            {
-                id: 102,
-                name: "Cacao en Grano",
-                destination: "Bélgica / USA",
-                fobPrice: 2800,
-                volume: "Tm",
-                profitMargin: 0.30,
-                riskLevel: 'low',
-                riskDescription: 'Bajo riesgo: Demanda constante',
-                lossProbability: 0.15,
-                clientRisk: 0.05
+            brasil: {
+                nombre: 'Brasil',
+                flag: '🇧🇷',
+                ciudades: ['Santos', 'Paranaguá'],
+                productos: [
+                    { nombre: 'Alimentos Procesados', categoria: 'Alimentos', precioFOB: 50, arancel: 0, riesgo: 'bajo', moq: 500 },
+                    { nombre: 'Autopartes', categoria: 'Automotriz', precioFOB: 250, arancel: 0, riesgo: 'medio', moq: 200 },
+                    { nombre: 'Productos Químicos', categoria: 'Químico', precioFOB: 400, arancel: 5, riesgo: 'medio', moq: 100 },
+                    { nombre: 'Maquinaria Agrícola', categoria: 'Agrícola', precioFOB: 8000, arancel: 0, riesgo: 'medio', moq: 1 }
+                ],
+                tiempoMaritimo: 7,
+                tiempoAereo: 1,
+                riesgoPais: 'bajo'
             },
-            {
-                id: 103,
-                name: "Rosas Frescas",
-                destination: "USA / Rusia",
-                fobPrice: 1.5,
-                volume: "Tallo",
-                profitMargin: 0.40,
-                riskLevel: 'high',
-                riskDescription: '⚠️ ALTO RIESGO: Perecedero extremo',
-                lossProbability: 0.40,
-                clientRisk: 0.20
+            japon: {
+                nombre: 'Japón',
+                flag: '🇯🇵',
+                ciudades: ['Yokohama', 'Osaka'],
+                productos: [
+                    { nombre: 'Electrónica Precisión', categoria: 'Tecnología', precioFOB: 600, arancel: 0, riesgo: 'bajo', moq: 100 },
+                    { nombre: 'Autos Japoneses', categoria: 'Automotriz', precioFOB: 18000, arancel: 35, riesgo: 'bajo', moq: 2 },
+                    { nombre: 'Robótica', categoria: 'Industrial', precioFOB: 12000, arancel: 0, riesgo: 'medio', moq: 1 },
+                    { nombre: 'Anime/Merchandising', categoria: 'Entretenimiento', precioFOB: 25, arancel: 20, riesgo: 'bajo', moq: 500 }
+                ],
+                tiempoMaritimo: 28,
+                tiempoAereo: 3,
+                riesgoPais: 'bajo'
             }
-        ];
+        };
 
-        // Eventos de decisión
-        const criticalDecisions = [
-            {
-                id: 'container_crisis',
-                title: 'Crisis de Contenedores',
-                scenario: 'No hay espacio en el barco. El cliente exige entrega a tiempo o cancela.',
-                options: [
-                    { text: 'Pagar flete aéreo (+80% costo)', consequence: 'Llega a tiempo', capitalEffect: -0.3, reputationEffect: 10, risk: 'safe' },
-                    { text: 'Esperar siguiente barco', consequence: 'Pierdes contrato', capitalEffect: -0.1, reputationEffect: -25, risk: 'risky' },
-                    { text: 'Negociar extensión (50% éxito)', consequence: 'Apuesta riesgosa', capitalEffect: 0, reputationEffect: -10, successRate: 0.5, risk: 'dangerous' }
-                ]
-            },
-            {
-                id: 'quality_issue',
-                title: 'Problema de Calidad',
-                scenario: '30% de la carga tiene etiquetado incorrecto.',
-                options: [
-                    { text: 'Re-etiquetar ($5,000)', consequence: 'Pierdes tiempo', capitalEffect: -5000, reputationEffect: 5, risk: 'safe' },
-                    { text: 'Vender con -40% descuento', consequence: 'Dañas marca', capitalEffect: -0.4, reputationEffect: -15, risk: 'risky' },
-                    { text: 'Soborno al inspector ($2,000)', consequence: '30% cárcel', capitalEffect: -2000, reputationEffect: -50, jailProbability: 0.3, risk: 'dangerous' }
-                ]
+        // Eventos aleatorios
+        const eventos = {
+            favorables: [
+                { id: 1, titulo: '💰 Descuento por Pronto Pago', desc: 'El proveedor ofrece 10% de descuento si pagas en 48 horas.', efecto: 'descuento', valor: 0.10 },
+                { id: 2, titulo: '🚢 Upgrade Gratuito', desc: 'La naviera cometió un error y te upgradea a contenedor mayor sin costo.', efecto: 'capacidad', valor: 1.5 },
+                { id: 3, titulo: '📉 Dólar se Deprecia', desc: 'El dólar cae 5% frente a la moneda local del país de origen.', efecto: 'cambio', valor: 0.95 },
+                { id: 4, titulo: '🎉 Tratado Comercial', desc: 'Se firma acuerdo emergente: aranceles reducen 50% para tu producto.', efecto: 'arancel', valor: 0.5 }
+            ],
+            neutros: [
+                { id: 5, titulo: '📋 Revisión Adicional', desc: 'Aduana solicita análisis extra. Retraso: 3 días, Costo: $200', efecto: 'retraso', valor: 200 },
+                { id: 6, titulo: '🌧️ Lluvias', desc: 'Lluvias torrenciales retrasan transporte terrestre 2 días.', efecto: 'retraso', valor: 100 },
+                { id: 7, titulo: '📄 Error Documental', desc: 'Error menor en factura. Corrección: $150', efecto: 'costo', valor: 150 },
+                { id: 8, titulo: '🏦 Demora Bancaria', desc: 'El banco demora transferencia 2 días hábiles.', efecto: 'retraso', valor: 0 },
+                { id: 9, titulo: '📦 Empaque Dañado', desc: 'Parte del empaque llegó dañado. Seguro cubre pero hay retraso.', efecto: 'retraso', valor: 500 },
+                { id: 10, titulo: '👷 Paro Aduanero', desc: 'Paro de 24 horas en aduana afecta todas las operaciones.', efecto: 'retraso', valor: 300 },
+                { id: 11, titulo: '💱 Volatilidad Cambiaria', desc: 'El tipo de cambio fluctúa ±3% durante la operación.', efecto: 'volatilidad', valor: 0.03 },
+                { id: 12, titulo: '🚛 Escasez Transporte', desc: 'Falta de camiones locales aumenta tarifa 10%.', efecto: 'costo', valor: 1.10 },
+                { id: 13, titulo: '📱 Competencia Agresiva', desc: 'Competidor lanza promoción. Tus ventas caerán 15% primer mes.', efecto: 'ventas', valor: 0.85 },
+                { id: 14, titulo: '🏭 Cambio Fecha', desc: 'Proveedor cambia fecha de entrega ±5 días.', efecto: 'retraso', valor: 0 }
+            ],
+            desfavorables: [
+                { id: 15, titulo: '📈 Dólar se Aprecia', desc: 'El dólar sube 8% de golpe. Tus costos de importación aumentan.', efecto: 'cambio', valor: 1.08 },
+                { id: 16, titulo: '🔥 Incendio en Puerto', desc: 'Incendio en puerto de transbordo. Retraso 2 semanas. Seguro cubre daños.', efecto: 'retraso', valor: 2000 },
+                { id: 17, titulo: '⚠️ Guerra Comercial', desc: 'Guerra comercial emergente: aranceles suben 25% adicionales.', efecto: 'arancel', valor: 1.25 },
+                { id: 18, titulo: '🦠 Cuarentena Sanitaria', desc: 'Brote sanitario detectado. Productos agrícolas/perecederos destruidos.', efecto: 'perdida', valor: 1.0 },
+                { id: 19, titulo: '⛽ Crisis Petrolera', desc: 'Crisis petrolera global: fletes marítimos suben 40%.', efecto: 'flete', valor: 1.40 },
+                { id: 20, titulo: '💥 Quiebra Proveedor', desc: 'El proveedor quiebra después de recibir tu pago anticipado. PÉRDIDA TOTAL.', efecto: 'quiebra', valor: 1.0 }
+            ]
+        };
+
+        // Funciones de utilidad
+        function formatMoney(amount) {
+            return '$' + amount.toLocaleString('es-EC', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function selectConfig(type, value, element) {
+            gameState.config[type] = value;
+            
+            // Remover selección previa
+            const cards = element.parentElement.querySelectorAll('.option-card');
+            cards.forEach(card => card.classList.remove('selected'));
+            
+            // Agregar selección actual
+            element.classList.add('selected');
+            
+            // Verificar si podemos iniciar
+            if (gameState.config.capital && gameState.config.modalidad && gameState.config.nivel) {
+                document.getElementById('startBtn').disabled = false;
             }
-        ];
+        }
 
-        // Inicialización
-        document.addEventListener('DOMContentLoaded', function() {
-            renderImportProducts();
-            renderExportProducts();
+        function startGame() {
+            gameState.capital = gameState.config.capital;
+            gameState.modalidad = gameState.config.modalidad;
+            gameState.nivel = gameState.config.nivel;
+            
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            
             updateStats();
-            setInterval(checkRandomEvent, 45000);
-            setInterval(applyInterest, 120000);
-        });
-
-        function renderImportProducts() {
-            const container = document.getElementById('importProducts');
-            container.innerHTML = importProducts.map(product => {
-                const riskClass = `risk-${product.riskLevel}`;
-                const riskText = product.riskLevel === 'high' ? 'ALTO RIESGO' : product.riskLevel === 'medium' ? 'Riesgo Medio' : 'Bajo Riesgo';
-                
-                return `
-                <div class="product-card import">
-                    <span class="risk-label ${riskClass}">${riskText}</span>
-                    <div class="product-header">
-                        <div class="product-title">${product.name}</div>
-                        <span class="tariff-code">${product.tariffCode}</span>
-                    </div>
-                    <div class="product-info">
-                        <strong>Origen:</strong> ${product.origin}<br>
-                        <strong>Precio FOB:</strong> $${product.fobPrice.toFixed(2)}<br>
-                        <strong>Arancel:</strong> ${(product.tariffRate * 100).toFixed(0)}%
-                    </div>
-                    <div class="risk-details">
-                        <strong>⚠️ Riesgo:</strong> ${product.riskDescription}<br>
-                        <small>Prob. pérdida: ${(product.lossProbability * 100).toFixed(0)}%</small>
-                    </div>
-                    <div class="controls">
-                        <button class="btn btn-primary" onclick="openImportCalc(${product.id})">Calcular Importación</button>
-                    </div>
-                </div>`;
-            }).join('');
-        }
-
-        function renderExportProducts() {
-            const container = document.getElementById('exportProducts');
-            container.innerHTML = exportProducts.map(product => {
-                const riskClass = `risk-${product.riskLevel}`;
-                const riskText = product.riskLevel === 'high' ? 'ALTO RIESGO' : product.riskLevel === 'medium' ? 'Riesgo Medio' : 'Bajo Riesgo';
-                
-                return `
-                <div class="product-card export">
-                    <span class="risk-label ${riskClass}">${riskText}</span>
-                    <div class="product-header">
-                        <div class="product-title">${product.name}</div>
-                        <span class="badge" style="background: #27ae60; color: white;">Export</span>
-                    </div>
-                    <div class="product-info">
-                        <strong>Destino:</strong> ${product.destination}<br>
-                        <strong>Precio FOB:</strong> $${product.fobPrice.toFixed(2)}/${product.volume}<br>
-                        <strong>Margen:</strong> ${(product.profitMargin * 100).toFixed(0)}%
-                    </div>
-                    <div class="risk-details">
-                        <strong>⚠️ Riesgo:</strong> ${product.riskDescription}<br>
-                        <small>Prob. incumplimiento: ${(product.clientRisk * 100).toFixed(0)}%</small>
-                    </div>
-                    <div class="controls">
-                        <button class="btn btn-success" onclick="openExportCalc(${product.id})">Simular Exportación</button>
-                    </div>
-                </div>`;
-            }).join('');
-        }
-
-        function openImportCalc(productId) {
-            const product = importProducts.find(p => p.id === productId);
-            document.getElementById('modalTitle').textContent = `Importar: ${product.name}`;
-            document.getElementById('modalBody').innerHTML = `
-                <div class="alert alert-warning">
-                    <strong>⚠️ Advertencia:</strong> Este producto tiene ${(product.lossProbability * 100).toFixed(0)}% probabilidad de pérdida.
-                </div>
-                <div class="form-group">
-                    <label>Cantidad:</label>
-                    <input type="number" id="importQty" value="100" min="1">
-                </div>
-                <div class="form-group">
-                    <label>Precio FOB unitario:</label>
-                    <input type="number" id="fobPrice" value="${product.fobPrice}" step="0.01">
-                </div>
-                <div class="form-group">
-                    <label>Precio de venta estimado:</label>
-                    <input type="number" id="salePrice" placeholder="Ingrese precio" step="0.01">
-                </div>
-                <div class="form-group">
-                    <label><input type="checkbox" id="acceptRisk"> Acepto el riesgo de pérdida</label>
-                </div>
-                <div class="controls">
-                    <button class="btn btn-success" onclick="confirmImport(${productId})">Confirmar</button>
-                    <button class="btn btn-danger" onclick="closeModal()">Cancelar</button>
-                </div>
-            `;
-            document.getElementById('calcModal').classList.add('active');
-        }
-
-        function confirmImport(productId) {
-            const product = importProducts.find(p => p.id === productId);
-            if (!document.getElementById('acceptRisk').checked && product.riskLevel !== 'low') {
-                alert('Debes aceptar el riesgo para continuar.');
-                return;
-            }
-            
-            const qty = parseInt(document.getElementById('importQty').value);
-            const fobPrice = parseFloat(document.getElementById('fobPrice').value);
-            const salePrice = parseFloat(document.getElementById('salePrice').value);
-            
-            // Cálculos
-            const totalFOB = qty * fobPrice;
-            const flete = totalFOB * product.fleteRate;
-            const seguro = totalFOB * 0.01;
-            const cif = totalFOB + flete + seguro;
-            const advalorem = cif * product.tariffRate;
-            const fodinfa = cif * 0.005;
-            const ice = product.hasICE ? (product.iceRate ? cif * product.iceRate : qty * 0.5) : 0;
-            const iva = (cif + advalorem + fodinfa + ice) * 0.15;
-            const totalCost = cif + advalorem + fodinfa + ice + iva;
-            
-            if (totalCost > gameState.capital) {
-                alert('Capital insuficiente.');
-                return;
-            }
-            
-            // Aplicar riesgo de pérdida
-            let finalRevenue = salePrice * qty;
-            let lossOccurred = false;
-            
-            if (Math.random() < product.lossProbability) {
-                // Pérdida ocurre
-                const lossType = Math.random();
-                if (lossType < 0.33) {
-                    // Precio cayó
-                    finalRevenue *= 0.7;
-                    lossOccurred = true;
-                    alert(`📉 PÉRDIDA: El precio de mercado cayó. Solo recuperas 70% del valor.`);
-                } else if (lossType < 0.66) {
-                    // Producto dañado
-                    finalRevenue *= 0.5;
-                    lossOccurred = true;
-                    alert(`📦 PÉRDIDA: Producto dañado en transporte. Solo vendes 50% al precio de descuento.`);
-                } else {
-                    // Cliente canceló
-                    finalRevenue = 0;
-                    lossOccurred = true;
-                    alert(`❌ PÉRDIDA TOTAL: Cliente canceló pedido. Pierdes toda la inversión.`);
-                }
-                gameState.consecutiveLosses++;
-            } else {
-                gameState.consecutiveLosses = 0;
-            }
-            
-            const profit = finalRevenue - totalCost;
-            
-            // Actualizar estado
-            gameState.capital -= totalCost;
-            gameState.capital += finalRevenue;
-            gameState.totalProfit += profit;
-            gameState.operations++;
-            gameState.experience += Math.abs(profit) / 100;
-            
-            if (profit < 0) {
-                gameState.reputation -= 5;
-            } else {
-                gameState.reputation = Math.min(100, gameState.reputation + 2);
-            }
-            
-            gameState.history.push({
-                type: 'Importación',
-                product: product.name,
-                qty: qty,
-                investment: totalCost,
-                revenue: finalRevenue,
-                profit: profit,
-                loss: lossOccurred,
-                date: new Date().toLocaleString()
-            });
-            
-            checkGameOver();
-            checkLevelUp();
-            updateStats();
-            closeModal();
-            
-            const msg = lossOccurred ? 
-                `❌ Operación con PÉRDIDA\nInversión: $${totalCost.toFixed(2)}\nRecuperado: $${finalRevenue.toFixed(2)}\nPérdida: $${Math.abs(profit).toFixed(2)}` :
-                `✅ Operación exitosa\nInversión: $${totalCost.toFixed(2)}\nVentas: $${finalRevenue.toFixed(2)}\nGanancia: $${profit.toFixed(2)}`;
-            alert(msg);
-        }
-
-        function checkRandomEvent() {
-            if (Math.random() > 0.6) return; // 40% probabilidad
-            
-            const decision = criticalDecisions[Math.floor(Math.random() * criticalDecisions.length)];
-            showDecision(decision);
-        }
-
-        function showDecision(decision) {
-            document.getElementById('decisionScenario').textContent = decision.scenario;
-            document.getElementById('decisionOptions').innerHTML = decision.options.map((opt, idx) => `
-                <div class="decision-option" onclick="makeDecision('${decision.id}', ${idx})">
-                    <h4>Opción ${String.fromCharCode(65 + idx)}: ${opt.text}</h4>
-                    <div class="consequence">${opt.consequence}</div>
-                    <span class="risk-level risk-${opt.risk}">${opt.risk.toUpperCase()}</span>
-                </div>
-            `).join('');
-            document.getElementById('decisionModal').classList.add('active');
-        }
-
-        function makeDecision(decisionId, optionIdx) {
-            const decision = criticalDecisions.find(d => d.id === decisionId);
-            const option = decision.options[optionIdx];
-            
-            document.getElementById('decisionModal').classList.remove('active');
-            
-            // Aplicar consecuencias
-            if (option.jailProbability && Math.random() < option.jailProbability) {
-                gameOver('CÁRCEL: Intentaste sobornar a un funcionario. Game Over.');
-                return;
-            }
-            
-            if (option.successRate !== undefined) {
-                if (Math.random() > option.successRate) {
-                    alert(`❌ La negociación falló. ${option.consequence}`);
-                    gameState.reputation += option.reputationEffect * 2;
-                } else {
-                    alert(`✅ La negociación funcionó.`);
-                }
-            }
-            
-            if (option.capitalEffect < 0) {
-                const loss = Math.abs(option.capitalEffect) * gameState.capital;
-                gameState.capital -= loss;
-            } else if (option.capitalEffect > 0) {
-                gameState.capital += option.capitalEffect;
-            }
-            
-            gameState.reputation = Math.max(0, Math.min(100, gameState.reputation + option.reputationEffect));
-            
-            checkGameOver();
-            updateStats();
-        }
-
-        function takeLoan() {
-            const amount = prompt('¿Cuánto quieres pedir prestado? (Máx: $' + (gameState.creditLimit - gameState.debt) + ')');
-            if (!amount) return;
-            
-            const numAmount = parseFloat(amount);
-            if (numAmount > gameState.creditLimit - gameState.debt) {
-                alert('Excedes tu límite de crédito.');
-                return;
-            }
-            
-            gameState.debt += numAmount;
-            gameState.capital += numAmount;
-            updateStats();
-            alert(`💰 Préstamo aprobado: $${numAmount.toLocaleString()}\nDeuda total: $${gameState.debt.toLocaleString()}\nInterés mensual: 5%`);
-        }
-
-        function payDebt() {
-            if (gameState.debt === 0) {
-                alert('No tienes deuda.');
-                return;
-            }
-            
-            const amount = prompt(`¿Cuánto quieres pagar? (Deuda: $${gameState.debt.toLocaleString()})`);
-            if (!amount) return;
-            
-            const numAmount = Math.min(parseFloat(amount), gameState.debt, gameState.capital);
-            
-            gameState.debt -= numAmount;
-            gameState.capital -= numAmount;
-            updateStats();
-            alert(`💵 Pago realizado: $${numAmount.toLocaleString()}\nDeuda restante: $${gameState.debt.toLocaleString()}`);
-        }
-
-        function applyInterest() {
-            if (gameState.debt > 0) {
-                const interest = gameState.debt * 0.05;
-                gameState.debt += interest;
-                alert(`🏦 Interés bancario aplicado: $${interest.toFixed(2)}\nNueva deuda: $${gameState.debt.toFixed(2)}`);
-                
-                if (gameState.debt > gameState.capital * 3) {
-                    gameOver('QUiebra por sobreendeudamiento. El banco ejecutó tu empresa.');
-                }
-            }
-        }
-
-        function checkGameOver() {
-            if (gameState.capital <= 0) {
-                gameOver('Capital agotado. Tu empresa ha quebrado.');
-            } else if (gameState.reputation <= 0) {
-                gameOver('Reputación destruida. Nadie quiere hacer negocios contigo.');
-            } else if (gameState.consecutiveLosses >= 3) {
-                gameOver('3 pérdidas consecutivas. Los inversores retiran su apoyo.');
-            }
-        }
-
-        function gameOver(reason) {
-            document.getElementById('gameOverReason').textContent = reason;
-            document.getElementById('finalOperations').textContent = gameState.operations;
-            document.getElementById('finalProfit').textContent = '$' + gameState.totalProfit.toLocaleString();
-            document.getElementById('finalLevel').textContent = gameState.level;
-            document.getElementById('finalReputation').textContent = gameState.reputation + '%';
-            document.getElementById('gameOverOverlay').classList.add('active');
-        }
-
-        function restartGame() {
-            location.reload();
-        }
-
-        function checkLevelUp() {
-            const levels = [
-                { level: 1, name: "Novato", xp: 0 },
-                { level: 2, name: "Aprendiz", xp: 1000 },
-                { level: 3, name: "Comerciante", xp: 3000 },
-                { level: 4, name: "Experto", xp: 6000 },
-                { level: 5, name: "Magnate", xp: 10000 }
-            ];
-            
-            for (let lvl of levels) {
-                if (gameState.experience >= lvl.xp && gameState.level < lvl.level) {
-                    gameState.level = lvl.level;
-                    alert(`🎉 ¡Subiste a Nivel ${lvl.level}: ${lvl.name}!`);
-                }
-            }
+            loadPhase(1);
         }
 
         function updateStats() {
-            document.getElementById('capital').textContent = '$' + Math.floor(gameState.capital).toLocaleString();
-            document.getElementById('operations').textContent = gameState.operations;
-            document.getElementById('profit').textContent = '$' + Math.floor(gameState.totalProfit).toLocaleString();
-            document.getElementById('reputation').textContent = gameState.reputation + '%';
-            document.getElementById('level').textContent = gameState.level;
-            document.getElementById('experience').textContent = Math.floor(gameState.experience) + ' XP';
-            document.getElementById('currentDebt').textContent = '$' + gameState.debt.toLocaleString();
-            
-            // Colores según estado
-            document.getElementById('capitalCard').className = 'stat-card' + (gameState.capital < 20000 ? ' danger' : gameState.capital < 40000 ? ' warning' : '');
-            document.getElementById('reputationCard').className = 'stat-card' + (gameState.reputation < 50 ? ' danger' : gameState.reputation < 75 ? ' warning' : '');
-            
-            document.getElementById('bankruptcyBtn').style.display = gameState.capital < 0 ? 'block' : 'none';
+            document.getElementById('statCapital').textContent = formatMoney(gameState.capital);
+            document.getElementById('statOps').textContent = gameState.operaciones.length;
+            document.getElementById('statRep').textContent = gameState.reputacion + '/100';
+            document.getElementById('statLevel').textContent = gameState.nivelJugador;
         }
 
-        function showTab(tabName) {
-            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
-        }
-
-        function closeModal() {
-            document.getElementById('calcModal').classList.remove('active');
-        }
-
-        function setDifficulty(level) {
-            gameState.difficulty = level;
-            document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
+        function loadPhase(phaseNum) {
+            gameState.fase = phaseNum;
+            updatePhaseIndicator();
             
-            if (level === 'easy') {
-                gameState.capital = 75000;
-                gameState.creditLimit = 150000;
-            } else if (level === 'hard') {
-                gameState.capital = 30000;
-                gameState.creditLimit = 50000;
+            const content = document.getElementById('phaseContent');
+            content.innerHTML = '';
+            
+            switch(phaseNum) {
+                case 1:
+                    renderFase1(content);
+                    break;
+                case 2:
+                    renderFase2(content);
+                    break;
+                case 3:
+                    renderFase3(content);
+                    break;
+                case 4:
+                    renderFase4(content);
+                    break;
+                case 5:
+                    renderFase5(content);
+                    break;
+                case 6:
+                    renderFase6(content);
+                    break;
             }
+        }
+
+        function updatePhaseIndicator() {
+            const steps = document.querySelectorAll('.phase-step');
+            steps.forEach((step, index) => {
+                step.classList.remove('active', 'completed');
+                if (index + 1 < gameState.fase) {
+                    step.classList.add('completed');
+                } else if (index + 1 === gameState.fase) {
+                    step.classList.add('active');
+                }
+            });
+        }
+
+        // FASE 1: Investigación de Mercado
+        function renderFase1(container) {
+            const box = document.createElement('div');
+            box.className = 'content-box';
+            box.innerHTML = `
+                <h2>🔍 Fase 1: Investigación de Mercado</h2>
+                <p>Selecciona el país de origen y el producto que deseas importar.</p>
+                
+                <h3 style="margin: 20px 0 15px; color: #495057;">Países Disponibles</h3>
+                <div class="option-grid" id="paisesGrid">
+                    ${Object.entries(paisesImportacion).map(([key, pais]) => `
+                        <div class="option-card" onclick="selectPais('${key}', this)">
+                            <span class="icon" style="font-size: 3em;">${pais.flag}</span>
+                            <h3>${pais.nombre}</h3>
+                            <p>Tiempo marítimo: ${pais.tiempoMaritimo} días<br>
+                            Riesgo: <span class="risk-indicator risk-${pais.riesgoPais}">${pais.riesgoPais}</span></p>
+                            <span class="price-tag">${pais.productos.length} productos</span>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div id="productosSection" style="display: none;">
+                    <h3 style="margin: 30px 0 15px; color: #495057;">Productos Disponibles</h3>
+                    <div class="option-grid" id="productosGrid"></div>
+                </div>
+                
+                <div id="demandaSection" style="display: none; margin-top: 30px;">
+                    <h3 style="margin-bottom: 15px; color: #495057;">Análisis de Demanda Local</h3>
+                    <div class="calculator-box" id="demandaAnalysis"></div>
+                </div>
+            `;
+            container.appendChild(box);
+        }
+
+        function selectPais(paisKey, element) {
+            gameState.operacionActual.pais = paisesImportacion[paisKey];
+            gameState.operacionActual.paisKey = paisKey;
+            
+            // Actualizar UI
+            document.querySelectorAll('#paisesGrid .option-card').forEach(card => {
+                card.classList.remove('selected');
+                card.style.opacity = '0.6';
+            });
+            element.classList.add('selected');
+            element.style.opacity = '1';
+            
+            // Mostrar productos
+            const productosSection = document.getElementById('productosSection');
+            const productosGrid = document.getElementById('productosGrid');
+            productosSection.style.display = 'block';
+            
+            productosGrid.innerHTML = gameState.operacionActual.pais.productos.map((prod, idx) => `
+                <div class="option-card" onclick="selectProducto(${idx}, this)">
+                    <h3>${prod.nombre}</h3>
+                    <p>Categoría: ${prod.categoria}<br>
+                    Precio FOB: ${formatMoney(prod.precioFOB)}<br>
+                    Arancel: ${prod.arancel}%<br>
+                    MOQ: ${prod.moq} unidades<br>
+                    Riesgo: <span class="risk-indicator risk-${prod.riesgo}">${prod.riesgo}</span></p>
+                </div>
+            `).join('');
+            
+            productosSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function selectProducto(prodIdx, element) {
+            gameState.operacionActual.producto = gameState.operacionActual.pais.productos[prodIdx];
+            gameState.operacionActual.cantidad = gameState.operacionActual.producto.moq; // Default MOQ
+            
+            document.querySelectorAll('#productosGrid .option-card').forEach(card => {
+                card.classList.remove('selected');
+                card.style.opacity = '0.6';
+            });
+            element.classList.add('selected');
+            element.style.opacity = '1';
+            
+            // Mostrar análisis de demanda
+            const demandaSection = document.getElementById('demandaSection');
+            const demandaAnalysis = document.getElementById('demandaAnalysis');
+            demandaSection.style.display = 'block';
+            
+            // Simular análisis de mercado
+            const precioLocal = gameState.operacionActual.producto.precioFOB * 2.5;
+            const demandaMensual = Math.floor(Math.random() * 5000) + 1000;
+            const competidores = Math.floor(Math.random() * 10) + 3;
+            const tendencia = ['↗️ Subiendo', '↘️ Bajando', '➡️ Estable'][Math.floor(Math.random() * 3)];
+            
+            demandaAnalysis.innerHTML = `
+                <div class="calculator-row">
+                    <span>Producto:</span>
+                    <span>${gameState.operacionActual.producto.nombre}</span>
+                </div>
+                <div class="calculator-row">
+                    <span>Precio mercado local estimado:</span>
+                    <span>${formatMoney(precioLocal)}/unidad</span>
+                </div>
+                <div class="calculator-row">
+                    <span>Volumen mensual estimado:</span>
+                    <span>${demandaMensual.toLocaleString()} unidades</span>
+                </div>
+                <div class="calculator-row">
+                    <span>Competidores principales:</span>
+                    <span>${competidores} importadores activos</span>
+                </div>
+                <div class="calculator-row">
+                    <span>Tendencia 12 meses:</span>
+                    <span>${tendencia}</span>
+                </div>
+                <div class="calculator-row">
+                    <span>Margen bruto potencial:</span>
+                    <span style="color: #2ecc71;">${Math.floor((precioLocal - gameState.operacionActual.producto.precioFOB) / precioLocal * 100)}%</span>
+                </div>
+                <div style="margin-top: 20px; text-align: center;">
+                    <button class="btn btn-primary" onclick="nextPhase()">Continuar a Negociación →</button>
+                </div>
+            `;
+            
+            demandaSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // FASE 2: Negociación
+        function renderFase2(container) {
+            const box = document.createElement('div');
+            box.className = 'content-box';
+            box.innerHTML = `
+                <h2>💼 Fase 2: Negociación y Contratación</h2>
+                <p>Define los términos comerciales con tu proveedor.</p>
+                
+                <h3 style="margin: 20px 0 15px; color: #495057;">1. Seleccionar INCOTERM</h3>
+                <div class="option-grid">
+                    <div class="option-card" onclick="selectIncoterm('EXW', this)">
+                        <h3>EXW - Ex Works</h3>
+                        <p>Tú pagas TODO desde la fábrica.<br>
+                        <strong>Más barato, más riesgo</strong><br>
+                        Costo: Base</p>
+                    </div>
+                    <div class="option-card" onclick="selectIncoterm('FOB', this)">
+                        <h3>FOB - Free On Board</h3>
+                        <p>Vendedor pone carga en barco.<br>
+                        <strong>Balance recomendado</strong><br>
+                        Costo: +Flete origen</p>
+                    </div>
+                    <div class="option-card" onclick="selectIncoterm('CIF', this)">
+                        <h3>CIF - Cost Insurance Freight</h3>
+                        <p>Vendedor paga hasta puerto Ecuador.<br>
+                        <strong>Seguro, más caro</strong><br>
+                        Costo: +Flete +Seguro</p>
+                    </div>
+                    <div class="option-card" onclick="selectIncoterm('DAP', this)">
+                        <h3>DAP - Delivered at Place</h3>
+                        <p>Vendedor entrega en tu bodega.<br>
+                        <strong>Cero riesgo transporte</strong><br>
+                        Costo: +Alto</p>
+                    </div>
+                </div>
+                
+                <div id="cantidadSection" style="display: none; margin-top: 30px;">
+                    <h3 style="margin-bottom: 15px; color: #495057;">2. Cantidad a Importar</h3>
+                    <div class="option-grid" id="cantidadOptions"></div>
+                </div>
+                
+                <div id="pagoSection" style="display: none; margin-top: 30px;">
+                    <h3 style="margin-bottom: 15px; color: #495057;">3. Método de Pago</h3>
+                    <div class="option-grid">
+                        <div class="option-card" onclick="selectPago('anticipado', this)">
+                            <h3>T/T 100% Anticipado</h3>
+                            <p><span class="risk-indicator risk-high">RIESGO MÁXIMO</span><br>
+                            Descuento 3%<br>
+                            Riesgo de estafa</p>
+                        </div>
+                        <div class="option-card" onclick="selectPago('3070', this)">
+                            <h3>T/T 30/70</h3>
+                            <p><span class="risk-indicator risk-medium">Riesgo Medio</span><br>
+                            30% anticipado, 70% contra BL<br>
+                            Balance estándar</p>
+                        </div>
+                        <div class="option-card" onclick="selectPago('lc', this)">
+                            <h3>Carta de Crédito</h3>
+                            <p><span class="risk-indicator risk-low">Seguro</span><br>
+                            Costo 1.5%, fondos congelados<br>
+                            Banco garantiza</p>
+                        </div>
+                        <div class="option-card" onclick="selectPago('open', this)">
+                            <h3>Open Account 60 días</h3>
+                            <p><span class="risk-indicator risk-high">Riesgo Proveedor</span><br>
+                            Mejor precio base<br>
+                            Requiere confianza</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="resumenNegociacion" style="display: none; margin-top: 30px;">
+                    <h3 style="margin-bottom: 15px; color: #495057;">Resumen de Negociación</h3>
+                    <div class="calculator-box" id="resumenNegContent"></div>
+                </div>
+            `;
+            container.appendChild(box);
+        }
+
+        function selectIncoterm(incoterm, element) {
+            gameState.operacionActual.incoterm = incoterm;
+            
+            document.querySelectorAll('.option-grid')[0].querySelectorAll('.option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            
+            // Mostrar opciones de cantidad
+            const cantidadSection = document.getElementById('cantidadSection');
+            const cantidadOptions = document.getElementById('cantidadOptions');
+            cantidadSection.style.display = 'block';
+            
+            const moq = gameState.operacionActual.producto.moq;
+            cantidadOptions.innerHTML = `
+                <div class="option-card" onclick="selectCantidad(${moq}, 0, this)">
+                    <h3>MOQ Mínimo</h3>
+                    <p>${moq} unidades<br>
+                    Sin descuento adicional<br>
+                    Inversión mínima</p>
+                </div>
+                <div class="option-card" onclick="selectCantidad(${moq * 2}, 5, this)">
+                    <h3>Volumen Medio</h3>
+                    <p>${moq * 2} unidades<br>
+                    Descuento 5%<br>
+                    Mejor precio unitario</p>
+                </div>
+                <div class="option-card" onclick="selectCantidad(${moq * 5}, 10, this)">
+                    <h3>Volumen Alto</h3>
+                    <p>${moq * 5} unidades<br>
+                    Descuento 10%<br>
+                    Riesgo inventario alto</p>
+                </div>
+            `;
+            
+            cantidadSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function selectCantidad(cantidad, descuento, element) {
+            gameState.operacionActual.cantidad = cantidad;
+            gameState.operacionActual.descuentoNegociado = descuento;
+            
+            document.querySelectorAll('#cantidadOptions .option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            
+            document.getElementById('pagoSection').style.display = 'block';
+            document.getElementById('pagoSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function selectPago(metodo, element) {
+            gameState.operacionActual.metodoPago = metodo;
+            
+            document.querySelectorAll('#pagoSection .option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            
+            // Calcular y mostrar resumen
+            const prod = gameState.operacionActual.producto;
+            const cant = gameState.operacionActual.cantidad;
+            const desc = gameState.operacionActual.descuentoNegociado;
+            
+            const valorFOB = (prod.precioFOB * cant) * (1 - desc/100);
+            const costoPago = metodo === 'lc' ? valorFOB * 0.015 : (metodo === 'anticipado' ? -valorFOB * 0.03 : 0);
+            
+            gameState.operacionActual.valorFOB = valorFOB;
+            gameState.operacionActual.costoPago = costoPago;
+            
+            const resumenDiv = document.getElementById('resumenNegociacion');
+            const resumenContent = document.getElementById('resumenNegContent');
+            
+            resumenDiv.style.display = 'block';
+            resumenContent.innerHTML = `
+                <div class="calculator-row">
+                    <span>Producto:</span>
+                    <span>${prod.nombre}</span>
+                </div>
+                <div class="calculator-row">
+                    <span>Cantidad:</span>
+                    <span>${cant.toLocaleString()} unidades</span>
+                </div>
+                <div class="calculator-row">
+                    <span>Precio FOB unitario:</span>
+                    <span>${formatMoney(prod.precioFOB)}</span>
+                </div>
+                <div class="calculator-row">
+                    <span>Descuento por volumen:</span>
+                    <span>${desc}%</span>
+                </div>
+                <div class="calculator-row">
+                    <span>Valor FOB total:</span>
+                    <span>${formatMoney(valorFOB)}</span>
+                </div>
+                <div class="calculator-row">
+                    <span>INCOTERM:</span>
+                    <span>${gameState.operacionActual.incoterm}</span>
+                </div>
+                <div class="calculator-row">
+                    <span>Método de pago:</span>
+                    <span>${metodo.toUpperCase()} ${costoPago !== 0 ? '(' + (costoPago > 0 ? '+' : '') + formatMoney(costoPago) + ')' : ''}</span>
+                </div>
+                <div class="calculator-row total">
+                    <span>Valor negociado:</span>
+                    <span>${formatMoney(valorFOB + costoPago)}</span>
+                </div>
+                <div style="margin-top: 20px; text-align: center;">
+                    <button class="btn btn-primary" onclick="nextPhase()">Continuar a Logística →</button>
+                </div>
+            `;
+            
+            resumenDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // FASE 3: Logística
+        function renderFase3(container) {
+            const box = document.createElement('div');
+            box.className = 'content-box';
+            box.innerHTML = `
+                <h2>🚢 Fase 3: Logística Internacional</h2>
+                <p>Organiza el transporte y seguro de tu carga.</p>
+                
+                <h3 style="margin: 20px 0 15px; color: #495057;">1. Modo de Transporte</h3>
+                <div class="option-grid">
+                    <div class="option-card" onclick="selectTransporte('lcl', this)">
+                        <h3>🚢 Marítimo LCL</h3>
+                        <p>Carga fraccionada (consolidada)<br>
+                        Costo: Variable por CBM<br>
+                        Tiempo: ${gameState.operacionActual.pais.tiempoMaritimo + 5} días<br>
+                        Ideal para volúmenes pequeños</p>
+                    </div>
+                    <div class="option-card" onclick="selectTransporte('fcl20', this)">
+                        <h3>🚢 FCL 20 pies</h3>
+                        <p>Contenedor exclusivo 28 CBM<br>
+                        Costo: ~$1,800<br>
+                        Tiempo: ${gameState.operacionActual.pais.tiempoMaritimo} días<br>
+                        Balance costo/volumen</p>
+                    </div>
+                    <div class="option-card" onclick="selectTransporte('fcl40', this)">
+                        <h3>🚢 FCL 40 pies</h3>
+                        <p>Contenedor grande 68 CBM<br>
+                        Costo: ~$2,800<br>
+                        Tiempo: ${gameState.operacionActual.pais.tiempoMaritimo} días<br>
+                        Economía de escala</p>
+                    </div>
+                    <div class="option-card" onclick="selectTransporte('aereo', this)">
+                        <h3>✈️ Aéreo</h3>
+                        <p>Carga aérea urgente<br>
+                        Costo: ~$4.50/kg<br>
+                        Tiempo: ${gameState.operacionActual.pais.tiempoAereo} días<br>
+                        Para productos de alto valor</p>
+                    </div>
+                </div>
+                
+                <div id="navieraSection" style="display: none; margin-top: 30px;">
+                    <h3 style="margin-bottom: 15px; color: #495057;">2. Seleccionar Naviera</h3>
+                    <div class="option-grid" id="navieraOptions"></div>
+                </div>
+                
+                <div id="seguroSection" style="display: none; margin-top: 30px;">
+                    <h3 style="margin-bottom: 15px; color: #495057;">3. Seguro Internacional</h3>
+                    <div class="option-grid">
+                        <div class="option-card" onclick="selectSeguro('ninguno', this)">
+                            <h3>❌ Sin Seguro</h3>
+                            <p><span class="risk-indicator risk-high">NO RECOMENDADO</span><br>
+                            Ahorro: 100%<br>
+                            Riesgo: Pérdida total si ocurre incidente</p>
+                        </div>
+                        <div class="option-card" onclick="selectSeguro('basico', this)">
+                            <h3>🛡️ Básico (ICC C)</h3>
+                            <p>Cubre: Naufragio, incendio<br>
+                            Costo: 0.3% del valor<br>
+                            Riesgo: Robo NO cubierto</p>
+                        </div>
+                        <div class="option-card" onclick="selectSeguro('amplio', this)">
+                            <h3>🛡️ Amplio (ICC B)</h3>
+                            <p>+ Robo, mojadura, accidentes<br>
+                            Costo: 0.6% del valor<br>
+                            Balance cobertura/precio</p>
+                        </div>
+                        <div class="option-card" onclick="selectSeguro('todo_riesgo', this)">
+                            <h3>🛡️ Todo Riesgo (ICC A)</h3>
+                            <p>Cubre casi cualquier daño<br>
+                            Costo: 1.2% del valor<br>
+                            Máxima protección</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="resumenLogistica" style="display: none; margin-top: 30px;">
+                    <h3 style="margin-bottom: 15px; color: #495057;">Resumen Logístico</h3>
+                    <div class="calculator-box" id="resumenLogContent"></div>
+                </div>
+            `;
+            container.appendChild(box);
+        }
+
+        function selectTransporte(tipo, element) {
+            gameState.operacionActual.transporte = tipo;
+            
+            document.querySelector('.option-grid').querySelectorAll('.option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            
+            // Calcular costo de transporte
+            const valorFOB = gameState.operacionActual.valorFOB;
+            let costoTransporte = 0;
+            let capacidad = 0;
+            
+            switch(tipo) {
+                case 'lcl':
+                    // Asumimos 10 CBM para cálculo
+                    costoTransporte = 150 * 10; 
+                    break;
+                case 'fcl20':
+                    costoTransporte = 1800;
+                    capacidad = 28;
+                    break;
+                case 'fcl40':
+                    costoTransporte = 2800;
+                    capacidad = 68;
+                    break;
+                case 'aereo':
+                    // Asumimos 500kg
+                    costoTransporte = 4.5 * 500;
+                    break;
+            }
+            
+            gameState.operacionActual.costoTransporte = costoTransporte;
+            gameState.operacionActual.capacidadContenedor = capacidad;
+            
+            // Mostrar navieras
+            const navieraSection = document.getElementById('navieraSection');
+            const navieraOptions = document.getElementById('navieraOptions');
+            navieraSection.style.display = 'block';
+            
+            const navieras = [
+                { nombre: 'Maersk', factor: 1.15, confiabilidad: 'Alta' },
+                { nombre: 'MSC', factor: 1.0, confiabilidad: 'Media' },
+                { nombre: 'COSCO', factor: 0.90, confiabilidad: 'Media-Baja' },
+                { nombre: 'CMA CGM', factor: 1.05, confiabilidad: 'Alta' }
+            ];
+            
+            navieraOptions.innerHTML = navieras.map(nav => `
+                <div class="option-card" onclick="selectNaviera('${nav.nombre}', ${nav.factor}, this)">
+                    <h3>${nav.nombre}</h3>
+                    <p>Confiabilidad: ${nav.confiabilidad}<br>
+                    Costo: ${formatMoney(costoTransporte * nav.factor)}<br>
+                    ${nav.factor > 1 ? '+' : ''}${((nav.factor - 1) * 100).toFixed(0)}% vs promedio</p>
+                </div>
+            `).join('');
+            
+            navieraSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function selectNaviera(nombre, factor, element) {
+            gameState.operacionActual.naviera = nombre;
+            gameState.operacionActual.costoTransporte *= factor;
+            
+            document.querySelectorAll('#navieraOptions .option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            
+            document.getElementById('seguroSection').style.display = 'block';
+            document.getElementById('seguroSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function selectSeguro(tipo, element) {
+            gameState.operacionActual.seguro = tipo;
+            
+            document.querySelectorAll('#seguroSection .option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            
+            // Calcular costo seguro
+            const valorCIF = gameState.operacionActual.valorFOB + gameState.operacionActual.costoTransporte;
+            const tasas = { ninguno: 0, basico: 0.003, amplio: 0.006, todo_riesgo: 0.012 };
+            const costoSeguro = valorCIF * tasas[tipo];
+            
+            gameState.operacionActual.costoSeguro = costoSeguro;
+            gameState.operacionActual.valorCIF = valorCIF + costoSeguro;
+            
+            // Mostrar resumen
+            const resumenDiv = document.getElementById('resumenLogistica');
+            const resumenContent = document.getElementById('resumenLogContent');
+            
+            resumenDiv.style.display = 'block';
+            resumenContent.innerHTML = `
+                <div class="calculator-row">
+                    <span>Modo de transporte:</span>
+                    <span>${gameState.operacionActual.transporte.toUpperCase()}</span>
+                </div>
+                <div class="calculator-row">
+                    <span>Naviera:</span>
+                    <span>${gameState.operacionActual.naviera}</span>
+                </div>
+                <div class="calculator-row">
+                    <span>Costo transporte:</span>
+                    <span>${formatMoney(gameState.operacionActual.costoTransporte)}</span>
+                </div>
+                <div class="calculator-row">
+                    <span>Tipo de seguro:</span>
+                    <span>${tipo === 'ninguno' ? 'SIN SEGURO' : tipo.toUpperCase()}</span>
+                </div>
+                <div class="calculator-row">
+                    <span>Costo seguro:</span>
+                    <span style="color: ${tipo === 'ninguno' ? '#e74c3c' : '#fff'};">${formatMoney(costoSeguro)}</span>
+                </div>
+                <div class="calculator-row">
+                    <span>Valor FOB:</span>
+                    <span>${formatMoney(gameState.operacionActual.valorFOB)}</span>
+                </div>
+                <div class="calculator-row total">
+                    <span>VALOR CIF:</span>
+                    <span>${formatMoney(gameState.operacionActual.valorCIF)}</span>
+                </div>
+                <div style="margin-top: 20px; text-align: center;">
+                    <button class="btn btn-primary" onclick="nextPhase()">Continuar a Aduanas →</button>
+                </div>
+            `;
+            
+            resumenDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // FASE 4: Aduanas
+        function renderFase4(container) {
+            const box = document.createElement('div');
+            box.className = 'content-box';
+            box.innerHTML = `
+                <h2>🏛️ Fase 4: Trámites Aduaneros Ecuador</h2>
+                <p>Gestiona el ingreso de tu mercancía al país.</p>
+                
+                <h3 style="margin: 20px 0 15px; color: #495057;">1. Canal de Despacho Aduanero</h3>
+                <div class="option-grid">
+                    <div class="option-card" onclick="selectCanal('verde', this)">
+                        <h3>🟢 Canal Verde</h3>
+                        <p>Liberación automática<br>
+                        Probabilidad: 5%<br>
+                        Costo: $0 extra<br>
+                        Tiempo: 4 horas</p>
+                        <span class="price-tag">Suerte</span>
+                    </div>
+                    <div class="option-card" onclick="selectCanal('amarillo', this)">
+                        <h3>🟡 Canal Amarillo</h3>
+                        <p>Revisión documental<br>
+                        Probabilidad: 60%<br>
+                        Costo: $0 extra<br>
+                        Tiempo: 2-3 días</p>
+                        <span class="price-tag">Estándar</span>
+                    </div>
+                    <div class="option-card" onclick="selectCanal('rojo', this)">
+                        <h3>🔴 Canal Rojo</h3>
+                        <p>Revisión física total<br>
+                        Probabilidad: 35%<br>
+                        Costo: +$800<br>
+                        Tiempo: 5-7 días</p>
+                        <span class="price-tag">Inspección</span>
+                    </div>
+                </div>
+                
+                <div id="agenciaSection" style="display: none; margin-top: 30px;">
+                    <h3 style="margin-bottom: 15px; color: #495057;">2. Agencia Aduanera (Agenciamiento)</h3>
+                    <div class="option-grid">
+                        <div class="option-card" onclick="selectAgencia('premium', 600, this)">
+                            <h3>Agencia Premium</h3>
+                            <p>Servicio express<br>
+                            Costo: $600 flat<br>
+                            Tiempo: 3 días<br>
+                            Experiencia: 15 años</p>
+                        </div>
+                        <div class="option-card" onclick="selectAgencia('estandar', 400, this)">
+                            <h3>Agencia Estándar</h3>
+                            <p>Servicio regular<br>
+                            Costo: $400 + 0.5% CIF<br>
+                            Tiempo: 7 días<br>
+                            Buenas referencias</p>
+                        </div>
+                        <div class="option-card" onclick="selectAgencia('economica', 300, this)">
+                            <h3>Agencia Económica</h3>
+                            <p>Nueva en el mercado<br>
+                            Costo: $300 + 0.3% CIF<br>
+                            Tiempo: 10 días<br>
+                            Riesgo: Media</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="calculoTributos" style="display: none; margin-top: 30px;">
+                    <h3 style="margin-bottom: 15px; color: #495057;">3. Cálculo de Tributos</h3>
+                    <div class="calculator-box" id="tributosContent"></div>
+                </div>
+            `;
+            container.appendChild(box);
+        }
+
+        function selectCanal(canal, element) {
+            // Simular probabilidad real
+            const rand = Math.random() * 100;
+            let canalReal = 'amarillo';
+            if (rand < 5) canalReal = 'verde';
+            else if (rand < 40) canalReal = 'rojo';
+            
+            gameState.operacionActual.canalSolicitado = canal;
+            gameState.operacionActual.canalReal = canalReal;
+            gameState.operacionActual.costoCanal = canalReal === 'rojo' ? 800 : 0;
+            
+            document.querySelector('.option-grid').querySelectorAll('.option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            
+            // Mostrar resultado del canal
+            setTimeout(() => {
+                alert(`🎲 Resultado del sorteo aduanero:\nSolicitaste: ${canal.toUpperCase()}\nTe tocó: ${canalReal.toUpperCase()}\n${canalReal === 'rojo' ? '⚠️ Deberás pagar $800 por revisión física' : '✅ Sin costos adicionales'}`);
+                
+                document.getElementById('agenciaSection').style.display = 'block';
+                document.getElementById('agenciaSection').scrollIntoView({ behavior: 'smooth' });
+            }, 500);
+        }
+
+        function selectAgencia(tipo, base, element) {
+            gameState.operacionActual.agencia = tipo;
+            const pct = tipo === 'premium' ? 0 : (tipo === 'estandar' ? 0.005 : 0.003);
+            gameState.operacionActual.costoAgencia = base + (gameState.operacionActual.valorCIF * pct);
+            
+            document.querySelectorAll('#agenciaSection .option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            
+            // Calcular tributos
+            const prod = gameState.operacionActual.producto;
+            const cif = gameState.operacionActual.valorCIF;
+            const arancel = cif * (prod.arancel / 100);
+            const baseIVA = cif + arancel;
+            const iva = baseIVA * 0.12;
+            const ice = prod.categoria === 'Automotriz' || prod.categoria === 'Tabaco' ? baseIVA * 0.25 : 0;
+            const tasa = cif * 0.005;
+            
+            gameState.operacionActual.arancel = arancel;
+            gameState.operacionActual.iva = iva;
+            gameState.operacionActual.ice = ice;
+            gameState.operacionActual.tasa = tasa;
+            gameState.operacionActual.totalTributos = arancel + iva + ice + tasa;
+            
+            const tributosDiv = document.getElementById('calculoTributos');
+            const tributosContent = document.getElementById('tributosContent');
+            
+            tributosDiv.style.display = 'block';
+            tributosContent.innerHTML = `
+                <div class="calculator-row">
+                    <span>Partida Arancelaria:</span>
+                    <span>${Math.floor(Math.random() * 9000) + 1000}.${Math.floor(Math.random() * 90) + 10}.${Math.floor(Math.random() * 90) + 10}</span>
+                </div>
+                <div class="calculator-row">
+                    <span>Valor CIF:</span>
+                    <span>${formatMoney(cif)}</span>
+                </div>
+                <div class="calculator-row">
+                    <span>Arancel Advalorem (${prod.arancel}%):</span>
+                    <span>${formatMoney(arancel)}</span>
+                </div>
+                <div class="calculator-row">
+                    <span>Base Imponible IVA:</span>
+                    <span>${formatMoney(baseIVA)}</span>
+                </div>
+                <div class="calculator-row">
+                    <span>IVA (12%):</span>
+                    <span>${formatMoney(iva)}</span>
+                </div>
+                ${ice > 0 ? `
+                <div class="calculator-row">
+                    <span>ICE (Específico):</span>
+                    <span>${formatMoney(ice)}</span>
+                </div>
+                ` : ''}
+                <div class="calculator-row">
+                    <span>Tasa Procesamiento (0.5%):</span>
+                    <span>${formatMoney(tasa)}</span>
+                </div>
+                <div class="calculator-row">
+                    <span>Costo Agenciamiento:</span>
+                    <span>${formatMoney(gameState.operacionActual.costoAgencia)}</span>
+                </div>
+                ${gameState.operacionActual.costoCanal > 0 ? `
+                <div class="calculator-row" style="color: #e74c3c;">
+                    <span>Revisión física (Canal Rojo):</span>
+                    <span>${formatMoney(gameState.operacionActual.costoCanal)}</span>
+                </div>
+                ` : ''}
+                <div class="calculator-row total">
+                    <span>TOTAL A PAGAR:</span>
+                    <span>${formatMoney(gameState.operacionActual.totalTributos + gameState.operacionActual.costoAgencia + gameState.operacionActual.costoCanal)}</span>
+                </div>
+                <div style="margin-top: 20px; text-align: center;">
+                    <button class="btn btn-primary" onclick="nextPhase()">Continuar a Distribución →</button>
+                </div>
+            `;
+            
+            tributosDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // FASE 5: Distribución
+        function renderFase5(container) {
+            const box = document.createElement('div');
+            box.className = 'content-box';
+            box.innerHTML = `
+                <h2>🏭 Fase 5: Operación Nacional</h2>
+                <p>Define cómo distribuirás tu producto en el mercado ecuatoriano.</p>
+                
+                <h3 style="margin: 20px 0 15px; color: #495057;">1. Almacenamiento</h3>
+                <div class="option-grid">
+                    <div class="option-card" onclick="selectAlmacen('propio', this)">
+                        <h3>🏢 Bodega Propia</h3>
+                        <p>Inversión inicial: $20,000<br>
+                        Costo mensual: $500<br>
+                        Control total del inventario<br>
+                        Requiere capital alto</p>
+                    </div>
+                    <div class="option-card" onclick="selectAlmacen('tercerizado', this)">
+                        <h3>📦 Bodega Tercerizada</h3>
+                        <p>Sin inversión inicial<br>
+                        Costo: $15/CBM/mes<br>
+                        Flexible según volumen<br>
+                        Ideal para empezar</p>
+                    </div>
+                    <div class="option-card" onclick="selectAlmacen('zona_franca', this)">
+                        <h3>🌐 Zona Franca</h3>
+                        <p>Sin pagar impuestos hasta vender<br>
+                        Costo: $800/mes<br>
+                        Re-exportación facilitada<br>
+                        Requiere permisos especiales</p>
+                    </div>
+                </div>
+                
+                <div id="transporteNacionalSection" style="display: none; margin-top: 30px;">
+                    <h3 style="margin-bottom: 15px; color: #495057;">2. Transporte Nacional</h3>
+                    <div class="option-grid">
+                        <div class="option-card" onclick="selectTransporteNacional('local', 800, this)">
+                            <h3>🚛 Transporte Local</h3>
+                            <p>Guayaquil-Quito<br>
+                            Costo: $800<br>
+                            Riesgo: Medio<br>
+                            Tiempo: 2 días</p>
+                        </div>
+                        <div class="option-card" onclick="selectTransporteNacional('refrigerado', 1200, this)">
+                            <h3>❄️ Transporte Refrigerado</h3>
+                            <p>Para perecederos<br>
+                            Costo: $1,200<br>
+                            Riesgo: Bajo<br>
+                            Control de temperatura</p>
+                        </div>
+                        <div class="option-card" onclick="selectTransporteNacional('seguro', 1000, this)">
+                            <h3>🛡️ Transporte Asegurado</h3>
+                            <p>Con seguro de tránsito<br>
+                            Costo: $1,000<br>
+                            Riesgo: Mínimo<br>
+                            Cobertura total</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="canalVentaSection" style="display: none; margin-top: 30px;">
+                    <h3 style="margin-bottom: 15px; color: #495057;">3. Canal de Venta</h3>
+                    <div class="option-grid">
+                        <div class="option-card" onclick="selectCanalVenta('mayorista', this)">
+                            <h3>🏪 Mayorista Tradicional</h3>
+                            <p>Margen: 15%<br>
+                            Volumen: Alto<br>
+                            Pago: A 30 días<br>
+                            Clientes establecidos</p>
+                        </div>
+                        <div class="option-card" onclick="selectCanalVenta('retail', this)">
+                            <h3>🏢 Retail Moderno</h3>
+                            <p>Margen: 25%<br>
+                            Exige descuentos<br>
+                            Pago: A 60 días<br>
+                            Grandes cadenas</p>
+                        </div>
+                        <div class="option-card" onclick="selectCanalVenta('ecommerce', this)">
+                            <h3>💻 E-commerce Propio</h3>
+                            <p>Margen: 40%<br>
+                            Inversión marketing<br>
+                            Pago: Inmediato<br>
+                            Control de marca</p>
+                        </div>
+                        <div class="option-card" onclick="selectCanalVenta('reexportacion', this)">
+                            <h3>🌎 Re-exportación</h3>
+                            <p>Margen: 10%<br>
+                            Volumen: Masivo<br>
+                            Dólares seguros<br>
+                            Perú/Colombia</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(box);
+        }
+
+        function selectAlmacen(tipo, element) {
+            gameState.operacionActual.almacen = tipo;
+            
+            document.querySelector('.option-grid').querySelectorAll('.option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            
+            document.getElementById('transporteNacionalSection').style.display = 'block';
+            document.getElementById('transporteNacionalSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function selectTransporteNacional(tipo, costo, element) {
+            gameState.operacionActual.transporteNacional = tipo;
+            gameState.operacionActual.costoTransporteNacional = costo;
+            
+            document.querySelectorAll('#transporteNacionalSection .option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            
+            document.getElementById('canalVentaSection').style.display = 'block';
+            document.getElementById('canalVentaSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function selectCanalVenta(canal, element) {
+            gameState.operacionActual.canalVenta = canal;
+            
+            const margenes = { mayorista: 0.15, retail: 0.25, ecommerce: 0.40, reexportacion: 0.10 };
+            gameState.operacionActual.margenCanal = margenes[canal];
+            
+            document.querySelectorAll('#canalVentaSection .option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            
+            // Calcular proyección financiera
+            nextPhase();
+        }
+
+        // FASE 6: Resultados y Evento
+        function renderFase6(container) {
+            // Calcular totales
+            const op = gameState.operacionActual;
+            const costoTotal = op.valorCIF + op.totalTributos + op.costoAgencia + op.costoCanal + op.costoTransporteNacional + op.costoPago;
+            const costoUnitario = costoTotal / op.cantidad;
+            const precioVenta = costoUnitario * (1 + op.margenCanal);
+            const ventaTotal = precioVenta * op.cantidad;
+            const ganancia = ventaTotal - costoTotal;
+            const roi = (ganancia / costoTotal) * 100;
+            
+            op.costoTotal = costoTotal;
+            op.gananciaEstimada = ganancia;
+            op.roi = roi;
+            op.precioVentaUnitario = precioVenta;
+            
+            // Verificar si capital alcanza
+            if (costoTotal > gameState.capital) {
+                container.innerHTML = `
+                    <div class="content-box" style="border-left-color: #dc3545;">
+                        <h2>❌ Fondos Insuficientes</h2>
+                        <p>No tienes capital suficiente para completar esta operación.</p>
+                        <div class="calculator-box">
+                            <div class="calculator-row total">
+                                <span>Costo total operación:</span>
+                                <span>${formatMoney(costoTotal)}</span>
+                            </div>
+                            <div class="calculator-row">
+                                <span>Tu capital disponible:</span>
+                                <span style="color: #e74c3c;">${formatMoney(gameState.capital)}</span>
+                            </div>
+                            <div class="calculator-row">
+                                <span>Faltante:</span>
+                                <span style="color: #e74c3c;">${formatMoney(costoTotal - gameState.capital)}</span>
+                            </div>
+                        </div>
+                        <div style="text-align: center; margin-top: 30px;">
+                            <button class="btn btn-warning" onclick="loadPhase(1)">Modificar Operación</button>
+                            <button class="btn btn-danger" onclick="location.reload()">Reiniciar Juego</button>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            const box = document.createElement('div');
+            box.className = 'content-box';
+            box.innerHTML = `
+                <h2>📊 Fase 6: Análisis Financiero</h2>
+                <p>Revisa los números de tu operación antes de confirmar.</p>
+                
+                <div class="calculator-box">
+                    <div class="calculator-row">
+                        <span>Producto:</span>
+                        <span>${op.producto.nombre} (${op.cantidad} uds)</span>
+                    </div>
+                    <div class="calculator-row">
+                        <span>Origen:</span>
+                        <span>${op.pais.nombre}</span>
+                    </div>
+                    <div class="calculator-row">
+                        <span>Valor FOB:</span>
+                        <span>${formatMoney(op.valorFOB)}</span>
+                    </div>
+                    <div class="calculator-row">
+                        <span>+ Flete Internacional:</span>
+                        <span>${formatMoney(op.costoTransporte)}</span>
+                    </div>
+                    <div class="calculator-row">
+                        <span>+ Seguro:</span>
+                        <span>${formatMoney(op.costoSeguro)}</span>
+                    </div>
+                    <div class="calculator-row">
+                        <span>= Valor CIF:</span>
+                        <span>${formatMoney(op.valorCIF)}</span>
+                    </div>
+                    <div class="calculator-row">
+                        <span>+ Aranceles e Impuestos:</span>
+                        <span>${formatMoney(op.totalTributos)}</span>
+                    </div>
+                    <div class="calculator-row">
+                        <span>+ Gastos Operativos:</span>
+                        <span>${formatMoney(op.costoAgencia + op.costoCanal + op.costoTransporteNacional + op.costoPago)}</span>
+                    </div>
+                    <div class="calculator-row total">
+                        <span>COSTO TOTAL:</span>
+                        <span>${formatMoney(costoTotal)}</span>
+                    </div>
+                    <div class="calculator-row">
+                        <span>Costo unitario landed:</span>
+                        <span>${formatMoney(costoUnitario)}</span>
+                    </div>
+                    <div class="calculator-row">
+                        <span>Precio venta estimado:</span>
+                        <span>${formatMoney(precioVenta)}</span>
+                    </div>
+                    <div class="calculator-row">
+                        <span>Venta total proyectada:</span>
+                        <span style="color: #2ecc71;">${formatMoney(ventaTotal)}</span>
+                    </div>
+                    <div class="calculator-row total" style="color: ${ganancia > 0 ? '#2ecc71' : '#e74c3c'};">
+                        <span>UTILIDAD ESPERADA:</span>
+                        <span>${formatMoney(ganancia)} (${roi.toFixed(1)}% ROI)</span>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn btn-success btn-lg" onclick="lanzarEvento()">🎲 LANZAR EVENTO ALEATORIO</button>
+                    <button class="btn btn-warning" onclick="loadPhase(1)">Modificar Operación</button>
+                </div>
+            `;
+            container.appendChild(box);
+        }
+
+        function lanzarEvento() {
+            const d20 = Math.floor(Math.random() * 20) + 1;
+            let evento;
+            
+            if (d20 <= 4) {
+                evento = eventos.favorables[Math.floor(Math.random() * eventos.favorables.length)];
+            } else if (d20 <= 14) {
+                evento = eventos.neutros[Math.floor(Math.random() * eventos.neutros.length)];
+            } else {
+                evento = eventos.desfavorables[Math.floor(Math.random() * eventos.desfavorables.length)];
+            }
+            
+            const modal = document.getElementById('eventModal');
+            document.getElementById('eventTitle').textContent = `🎲 Evento Aleatorio (Dado: ${d20})`;
+            document.getElementById('eventDescription').innerHTML = `
+                <strong>${evento.titulo}</strong><br><br>
+                ${evento.desc}
+            `;
+            
+            // Calcular impacto
+            let impactoTexto = '';
+            let nuevoCosto = gameState.operacionActual.costoTotal;
+            let nuevaGanancia = gameState.operacionActual.gananciaEstimada;
+            
+            switch(evento.efecto) {
+                case 'descuento':
+                    const descuento = gameState.operacionActual.valorFOB * evento.valor;
+                    nuevoCosto -= descuento;
+                    impactoTexto = `Ahorro: ${formatMoney(descuento)}`;
+                    break;
+                case 'cambio':
+                    const impactoCambio = gameState.operacionActual.valorFOB * (evento.valor - 1);
+                    nuevoCosto += impactoCambio;
+                    impactoTexto = evento.valor > 1 ? `Costo adicional: ${formatMoney(impactoCambio)}` : `Ahorro: ${formatMoney(Math.abs(impactoCambio))}`;
+                    break;
+                case 'arancel':
+                    const impactoArancel = gameState.operacionActual.arancel * (evento.valor - 1);
+                    nuevoCosto += impactoArancel;
+                    impactoTexto = `Impacto arancelario: ${formatMoney(impactoArancel)}`;
+                    break;
+                case 'flete':
+                    const impactoFlete = gameState.operacionActual.costoTransporte * (evento.valor - 1);
+                    nuevoCosto += impactoFlete;
+                    impactoTexto = `Incremento flete: ${formatMoney(impactoFlete)}`;
+                    break;
+                case 'costo':
+                    if (evento.valor < 2) {
+                        nuevoCosto += evento.valor;
+                        impactoTexto = `Costo adicional: ${formatMoney(evento.valor)}`;
+                    } else {
+                        nuevoCosto *= evento.valor;
+                        impactoTexto = `Incremento porcentual aplicado`;
+                    }
+                    break;
+                case 'retraso':
+                    nuevoCosto += evento.valor;
+                    impactoTexto = `Costos por retraso: ${formatMoney(evento.valor)}`;
+                    break;
+                case 'perdida':
+                    impactoTexto = `⚠️ PÉRDIDA TOTAL DEL PRODUCTO`;
+                    nuevoCosto = gameState.operacionActual.costoTotal; // Pierdes todo
+                    nuevaGanancia = -gameState.operacionActual.costoTotal;
+                    break;
+                case 'quiebra':
+                    impactoTexto = `💥 PÉRDIDA TOTAL: El proveedor desapareció con tu dinero`;
+                    nuevoCosto = gameState.operacionActual.costoTotal;
+                    nuevaGanancia = -gameState.operacionActual.costoTotal;
+                    break;
+                default:
+                    impactoTexto = 'Sin impacto monetario directo';
+            }
+            
+            nuevaGanancia = (gameState.operacionActual.precioVentaUnitario * gameState.operacionActual.cantidad) - nuevoCosto;
+            
+            const optionsDiv = document.getElementById('eventOptions');
+            optionsDiv.innerHTML = `
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: left;">
+                    <h4>Impacto Financiero:</h4>
+                    <p>${impactoTexto}</p>
+                    <hr>
+                    <p><strong>Costo original:</strong> ${formatMoney(gameState.operacionActual.costoTotal)}</p>
+                    <p><strong>Nuevo costo:</strong> ${formatMoney(nuevoCosto)}</p>
+                    <p><strong>Nueva utilidad:</strong> <span style="color: ${nuevaGanancia > 0 ? '#28a745' : '#dc3545'};">${formatMoney(nuevaGanancia)}</span></p>
+                    <p><strong>Nuevo ROI:</strong> ${((nuevaGanancia/nuevoCosto)*100).toFixed(1)}%</p>
+                </div>
+                <h4>¿Qué decides hacer?</h4>
+                <button class="btn btn-success" onclick="confirmarOperacion(${nuevoCosto}, ${nuevaGanancia})">✅ PROSEGUIR con la operación</button>
+                ${evento.efecto !== 'quiebra' && evento.efecto !== 'perdida' ? `
+                <button class="btn btn-danger" onclick="cancelarOperacion()">❌ CANCELAR operación (pierdes depósito)</button>
+                ` : ''}
+            `;
+            
+            modal.style.display = 'flex';
+        }
+
+        function confirmarOperacion(costoFinal, gananciaFinal) {
+            document.getElementById('eventModal').style.display = 'none';
+            
+            // Actualizar estado
+            gameState.capital -= costoFinal;
+            gameState.operacionActual.costoReal = costoFinal;
+            gameState.operacionActual.gananciaReal = gananciaFinal;
+            gameState.operacionActual.fecha = new Date().toLocaleDateString();
+            gameState.operaciones.push(gameState.operacionActual);
+            
+            // Actualizar reputación
+            if (gananciaFinal > 0) {
+                gameState.reputacion = Math.min(100, gameState.reputacion + 5);
+            } else {
+                gameState.reputacion = Math.max(0, gameState.reputacion - 10);
+            }
+            
+            // Verificar nivel
+            if (gameState.operaciones.length >= 5 && gameState.operaciones.filter(o => o.gananciaReal > 0).length >= 3) {
+                gameState.nivelJugador = 'Profesional';
+            }
+            if (gameState.operaciones.length >= 15 && gameState.operaciones.filter(o => o.gananciaReal > 0).length >= 10) {
+                gameState.nivelJugador = 'Experto';
+            }
+            
             updateStats();
+            
+            // Mostrar resultado final
+            const container = document.getElementById('phaseContent');
+            container.innerHTML = `
+                <div class="content-box" style="border-left-color: ${gananciaFinal > 0 ? '#28a745' : '#dc3545'};">
+                    <h2>${gananciaFinal > 0 ? '✅ OPERACIÓN COMPLETADA' : '❌ OPERACIÓN FINALIZADA CON PÉRDIDA'}</h2>
+                    <div class="calculator-box">
+                        <div class="calculator-row">
+                            <span>Capital anterior:</span>
+                            <span>${formatMoney(gameState.capital + costoFinal)}</span>
+                        </div>
+                        <div class="calculator-row">
+                            <span>Inversión realizada:</span>
+                            <span>${formatMoney(costoFinal)}</span>
+                        </div>
+                        <div class="calculator-row">
+                            <span>Retorno obtenido:</span>
+                            <span style="color: ${gananciaFinal > 0 ? '#2ecc71' : '#e74c3c'};">${formatMoney(costoFinal + gananciaFinal)}</span>
+                        </div>
+                        <div class="calculator-row total">
+                            <span>UTILIDAD/PÉRDIDA:</span>
+                            <span style="color: ${gananciaFinal > 0 ? '#2ecc71' : '#e74c3c'};">${gananciaFinal > 0 ? '+' : ''}${formatMoney(gananciaFinal)}</span>
+                        </div>
+                        <div class="calculator-row">
+                            <span>Nuevo capital:</span>
+                            <span style="color: ${gameState.capital > 50000 ? '#2ecc71' : '#e74c3c'};">${formatMoney(gameState.capital)}</span>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button class="btn btn-primary" onclick="nuevaOperacion()">🔄 Nueva Operación</button>
+                        <button class="btn btn-success" onclick="verHistorial()">📊 Ver Historial</button>
+                        ${gameState.capital < 10000 ? `<button class="btn btn-danger" onclick="location.reload()">🔄 Reiniciar (Capital crítico)</button>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function cancelarOperacion() {
+            document.getElementById('eventModal').style.display = 'none';
+            
+            // Pérdida del depósito (30% del FOB)
+            const perdida = gameState.operacionActual.valorFOB * 0.30;
+            gameState.capital -= perdida;
+            gameState.reputacion = Math.max(0, gameState.reputacion - 5);
+            
+            updateStats();
+            
+            const container = document.getElementById('phaseContent');
+            container.innerHTML = `
+                <div class="content-box" style="border-left-color: #ffc107;">
+                    <h2>⚠️ OPERACIÓN CANCELADA</h2>
+                    <p>Decidiste no arriesgar más capital. Perdiste el depósito comprometido.</p>
+                    <div class="calculator-box">
+                        <div class="calculator-row">
+                            <span>Pérdida por depósito:</span>
+                            <span style="color: #e74c3c;">${formatMoney(perdida)}</span>
+                        </div>
+                        <div class="calculator-row">
+                            <span>Capital preservado:</span>
+                            <span style="color: #2ecc71;">${formatMoney(gameState.capital)}</span>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button class="btn btn-primary" onclick="nuevaOperacion()">🔄 Intentar Nueva Operación</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function nuevaOperacion() {
+            gameState.operacionActual = {};
+            loadPhase(1);
+        }
+
+        function verHistorial() {
+            const container = document.getElementById('phaseContent');
+            let html = `
+                <div class="content-box">
+                    <h2>📊 Historial de Operaciones</h2>
+                    <p>Has realizado ${gameState.operaciones.length} operaciones en total.</p>
+            `;
+            
+            gameState.operaciones.forEach((op, idx) => {
+                const exito = op.gananciaReal > 0;
+                html += `
+                    <div class="log-entry ${exito ? 'success' : 'danger'}">
+                        <strong>Operación #${idx + 1}</strong> - ${op.fecha}<br>
+                        ${op.pais.flag} ${op.producto.nombre} (${op.cantidad} uds)<br>
+                        Inversión: ${formatMoney(op.costoReal)} | 
+                        Resultado: <span style="color: ${exito ? '#28a745' : '#dc3545'};">${exito ? '+' : ''}${formatMoney(op.gananciaReal)}</span>
+                    </div>
+                `;
+            });
+            
+            html += `
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button class="btn btn-primary" onclick="nuevaOperacion()">🔄 Nueva Operación</button>
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+
+        function nextPhase() {
+            loadPhase(gameState.fase + 1);
+        }
+
+        // Cerrar modal al hacer click fuera
+        window.onclick = function(event) {
+            const modal = document.getElementById('eventModal');
+            if (event.target === modal) {
+                // No cerrar, obligar a decidir
+            }
         }
     </script>
 </body>
